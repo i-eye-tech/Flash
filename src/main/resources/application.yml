@@ -3,8 +3,8 @@ spring:
     name: Flash
   datasource:
     url: jdbc:postgresql://ip:port/
-    username: spdockeruser
-    password: spdockeruser@2019
+    username:
+    password:
     mysql:
       url: jdbc:mysql://ip:3306/
       username:
