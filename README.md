@@ -1,0 +1,1 @@
+# Flash is an automation service to execute regression/someke/sanity tests with configurations in mongo db.
