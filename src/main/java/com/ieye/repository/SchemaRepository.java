@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface SchemaRepository extends MongoRepository<Schema, SchemaIdentifier> {
 
     Optional<Schema> findByIdAndActive(SchemaIdentifier schemaIdentifier, boolean active);
-    Optional<Schema> findByTestIdAndActive(String testId, boolean active);
+    Optional<Schema> findByIdTestIdAndActive(String testId, boolean active);
     List<Schema> findAll();
 
 }

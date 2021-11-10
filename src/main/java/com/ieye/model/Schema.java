@@ -12,10 +12,8 @@ import java.util.List;
 public class Schema {
 
     @NonNull @Id
-    private SchemaIdentifier _id;
-    private String beanName;
+    private SchemaIdentifier id;
     private List<ApiSpecification> apiSpec;
     private boolean active;
-    private String serviceName;
 
 }

@@ -30,7 +30,7 @@ public class Runner {
         Schema schema;
 
         if (startRequestDTO.getProjectId() == null) {
-            schema = schemaRepository.findByTestIdAndActive(startRequestDTO.getTestId(), true).orElse(null);
+            schema = schemaRepository.findByIdTestIdAndActive(startRequestDTO.getTestId(), true).orElse(null);
         } else {
             SchemaIdentifier schemaIdentifier = new SchemaIdentifier(startRequestDTO.getProjectId(), startRequestDTO.getTestId());
             schema = schemaRepository.findByIdAndActive(schemaIdentifier, true).orElse(null);

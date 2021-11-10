@@ -25,7 +25,7 @@ import java.util.Map;
 @Configuration
 public class MongoHelper {
 
-    @Value("${spring.data.mongodb.ur}")
+    @Value("${spring.data.mongodb.uri}")
     private String uri;
 
     @Value("${spring.data.mongodb.database}")
