@@ -2,7 +2,7 @@ package com.ieye.core.test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ieye.core.helper.ReportHelper;
+import com.ieye.core.helper.Reporter;
 import com.ieye.core.helper.database.MongoHelper;
 import com.ieye.model.ApiSpecification;
 import com.ieye.model.TestDataModel;
@@ -19,7 +19,7 @@ import java.util.List;
 abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
-    protected ReportHelper reportHelper;
+    protected Reporter reporter;
 
     @Autowired
     protected MongoHelper mongoHelper;
@@ -33,7 +33,7 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
     @BeforeSuite
     @Parameters("requestId")
-    protected void zBeforeSuite(String requestId) { reportHelper.generate(requestId); }
+    protected void zBeforeSuite(String requestId) { reporter.generate(requestId); }
 
     @DataProvider(parallel = true)
     protected Object[][] testData(ITestContext iTestContext) {
@@ -62,12 +62,12 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
     @BeforeMethod
     protected void createTest(Object[] args){
         TestDataModel testDataModel = (TestDataModel) args[0];
-        reportHelper.createTest(testDataModel.getId().getTestCaseId(), testDataModel.getDescription());
+        reporter.createTest(testDataModel.getId().getTestCaseId(), testDataModel.getDescription());
     }
 
     @AfterMethod
     protected void afterMethod() {
-        reportHelper.pass();
+        reporter.pass();
     }
 
 }

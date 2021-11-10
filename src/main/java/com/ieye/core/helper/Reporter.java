@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 @Component
-public class ReportHelper {
+public class Reporter {
 
     private final ExtentReports extentReport = new ExtentReports();
     private final ConcurrentMap<Integer, ExtentTest> testInfo = new ConcurrentHashMap<>();
