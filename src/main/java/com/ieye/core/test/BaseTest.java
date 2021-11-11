@@ -28,6 +28,9 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
     @Autowired
     protected CurrentTest currentTest;
 
+    @Autowired
+    protected ApiSpecification apiSpecification;
+
     @BeforeClass(alwaysRun = true)
     @BeforeSuite(alwaysRun = true)
     @Override
@@ -39,19 +42,21 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
     @Parameters("requestId")
     protected void zBeforeSuite(String requestId) { reporter.generate(requestId); }
 
-    @DataProvider(parallel = true)
-    protected Object[][] testData(ITestContext iTestContext) {
-        ApiSpecification apiSpecification;
-        ObjectMapper mapper = new ObjectMapper();
+    @BeforeClass
+    protected void beforeClass(ITestContext iTestContext) {
         try {
+            ObjectMapper mapper = new ObjectMapper();
             String sApiSpecification = iTestContext.getCurrentXmlTest().getXmlClasses().get(0).getAllParameters()
                     .get("apiSpecification");
             apiSpecification = mapper.readValue(sApiSpecification, ApiSpecification.class);
         } catch (JsonProcessingException e) {
             log.error("JsonProcessing Exception {} in data provider", e.getMessage());
-            return new Object[0][0];
         }
+    }
 
+    @DataProvider(parallel = true)
+    protected Object[][] testData(ITestContext iTestContext) {
+        ObjectMapper mapper = new ObjectMapper();
         BasicDBObject basicDBObject = new BasicDBObject("_id.testDataId", apiSpecification.getId())
                 .append("active", true);
 

@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 @Data
 @Scope("testscope")
+@Component
 public class CurrentTest {
 
     private String requestId;

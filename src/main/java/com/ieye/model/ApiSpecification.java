@@ -16,6 +16,7 @@ public class ApiSpecification extends BaseModel {
     private String validationType;
     private String testCollection;
     private String domain;
+    private String stableDomain;
     private String name;
 
 }

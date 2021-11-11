@@ -25,7 +25,7 @@ public class RestManager {
 
     private ObjectMapper objectMapper;
 
-    public RestSpecification createRequest(ApiSpecification apiSpecification, TestDataModel testDataModel) {
+    public RestSpecification createRestSpecification(ApiSpecification apiSpecification, TestDataModel testDataModel) {
         RestSpecification restSpecification = RestSpecification.builder().basePath(apiSpecification.getDomain())
                 .url(getPreferredValue(apiSpecification.getEndPoint(), testDataModel.getEndPoint()))
                 .method(RestMethod.valueOf(getPreferredValue(apiSpecification.getMethod().toString(), testDataModel.getMethod().toString())))
