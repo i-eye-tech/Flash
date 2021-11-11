@@ -3,17 +3,18 @@ package com.ieye.core.helper;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import com.ieye.core.lib.currenttest.CurrentTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 @Component
 public class Reporter {
 
     private final ExtentReports extentReport = new ExtentReports();
-    private final ConcurrentMap<Integer, ExtentTest> testInfo = new ConcurrentHashMap<>();
     private String reportName;
+
+    @Autowired
+    CurrentTest currentTest;
 
     public void generate(String requestId) {
         reportName = requestId + ".html";
@@ -23,16 +24,15 @@ public class Reporter {
     }
 
     public void createTest(String testId, String description) {
-        testInfo.put((int) Thread.currentThread().getId(), extentReport.createTest(testId, description));
+        ExtentTest test = extentReport.createTest(testId, description);
+        currentTest.setExtentTest(test);
     }
 
-    private ExtentTest getTest() { return testInfo.get((int) Thread.currentThread().getId()); }
+    public void pass(String msg) { currentTest.getExtentTest().pass(msg); }
 
-    public void pass(String msg) { getTest().pass(msg); }
+    public void pass() { currentTest.getExtentTest().pass("Pass"); }
 
-    public void pass() { getTest().pass("Pass"); }
-
-    public void info(String s) { getTest().info(s); }
+    public void info(String s) { currentTest.getExtentTest().info(s); }
 
     public void flush() { extentReport.flush(); }
 

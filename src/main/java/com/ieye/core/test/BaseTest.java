@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ieye.core.helper.Reporter;
 import com.ieye.core.helper.database.MongoHelper;
+import com.ieye.core.lib.currenttest.CurrentTest;
 import com.ieye.model.ApiSpecification;
 import com.ieye.model.TestDataModel;
 import com.mongodb.BasicDBObject;
@@ -23,6 +24,9 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     protected MongoHelper mongoHelper;
+
+    @Autowired
+    protected CurrentTest currentTest;
 
     @BeforeClass(alwaysRun = true)
     @BeforeSuite(alwaysRun = true)
@@ -60,9 +64,12 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
     }
 
     @BeforeMethod
-    protected void createTest(Object[] args){
+    @Parameters("requestId")
+    protected void createTest(String requestId, Object[] args){
         TestDataModel testDataModel = (TestDataModel) args[0];
         reporter.createTest(testDataModel.getId().getTestCaseId(), testDataModel.getDescription());
+        currentTest.setRequestId(requestId);
+        currentTest.setTestId(testDataModel.getId().getTestCaseId());
     }
 
     @AfterMethod
