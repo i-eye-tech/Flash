@@ -93,6 +93,13 @@
             <version>5.0.9</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.flipkart.zjsonpatch/zjsonpatch -->
+        <dependency>
+            <groupId>com.flipkart.zjsonpatch</groupId>
+            <artifactId>zjsonpatch</artifactId>
+            <version>0.4.11</version>
+        </dependency>
+
     </dependencies>
 
     <build>

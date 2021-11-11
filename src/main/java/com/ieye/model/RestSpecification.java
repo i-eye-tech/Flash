@@ -1,10 +1,11 @@
 package com.ieye.model;
 
-
+import com.ieye.core.enums.RestMethod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Data
@@ -13,14 +14,14 @@ import java.util.Map;
 public class RestSpecification {
 
     private String basePath;
-    private String method;
+    private RestMethod method = RestMethod.GET;
     private String url;
-    private Map<String, String> queryParams;
-    private Map<String, String> pathParams;
-    private Map<String, String> formParams;
-    private Map<String, String> headers;
-    private Map<String, String> cookies;
-    private Object body;
+    private Map<String, String> queryParams = new HashMap<>();
+    private Map<String, String> pathParams = new HashMap<>();
+    private Map<String, String> formParams = new HashMap<>();
+    private Map<String, String> headers = new HashMap<>();
+    private Map<String, String> cookies = new HashMap<>();
+    private Object body = new Object();
     private String contentType = "application/json";
     private Integer expectedStatusCode;
     private String expectedJson;

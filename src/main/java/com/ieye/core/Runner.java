@@ -55,6 +55,8 @@ public class Runner {
 
         XmlSuite xmlSuite = new XmlSuite();
         xmlSuite.setParameters(suiteParams);
+        xmlSuite.setDataProviderThreadCount(4);
+        xmlSuite.setParallel(XmlSuite.ParallelMode.METHODS);
 
         Map<String, String> classParams = new HashMap<>();
         List<XmlClass> xmlClasses = new ArrayList<>();
@@ -76,8 +78,5 @@ public class Runner {
 
         testNG.run();
     }
-
-
-
 
 }

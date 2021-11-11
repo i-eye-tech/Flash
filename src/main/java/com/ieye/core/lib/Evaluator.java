@@ -1,22 +1,23 @@
-package com.ieye.core.helper;
+package com.ieye.core.lib;
 
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.stereotype.Component;
 
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
+@Component
 public class Evaluator {
 
-    public String evaluate(String s1) {
+    public String evaluate(String s1, JsonNode jsonNode) {
+        String json = jsonNode.toString();
         if(!isAnExpression(s1))
             return s1;
         return "";
     }
 
-    private String resolveUsingEvaluator(String s1) {
+    private String resolveUsingEvaluator(String s1, String json) {
         return "";
     }
 
-    private String resolveUsingData(String s1) {
+    private String resolveUsingData(String s1, String json) {
         return "";
     }
 
