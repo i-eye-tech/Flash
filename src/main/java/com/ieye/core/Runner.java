@@ -2,7 +2,7 @@ package com.ieye.core;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ieye.core.test.GenericValidatorTest;
+import com.ieye.core.test.FlashTest;
 import com.ieye.model.Schema;
 import com.ieye.model.SchemaIdentifier;
 import com.ieye.model.StartRequestDTO;
@@ -64,7 +64,7 @@ public class Runner {
         ObjectMapper mapper = new ObjectMapper();
         schema.getApiSpec().forEach(n -> {
             XmlClass xmlClass = new XmlClass();
-            xmlClass.setClass(GenericValidatorTest.class);
+            xmlClass.setClass(FlashTest.class);
             try {
                 classParams.put("apiSpecification", mapper.writeValueAsString(n));
             } catch (JsonProcessingException ignore) {}

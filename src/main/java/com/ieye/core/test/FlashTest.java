@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 @SpringBootTest
 @Slf4j
-public class GenericValidatorTest extends BaseTest {
+public class FlashTest extends BaseTest {
 
     @Test(dataProvider = "testData")
     void genericValidatorTest(TestDataModel testDataModel) {
