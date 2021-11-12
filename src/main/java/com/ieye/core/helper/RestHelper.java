@@ -5,19 +5,28 @@ import com.ieye.model.RestSpecification;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.testng.Assert;
 
 @Component
+@Slf4j
 public class RestHelper {
+
+    @Autowired
+    private Reporter reporter;
 
     public Response execute(RestSpecification restSpecification) {
         RequestSpecification request = createRequest(restSpecification);
         Response response = send(request, restSpecification.getMethod());
 
         if(restSpecification.getExpectedStatusCode() != null
-                && response.getStatusCode() != restSpecification.getExpectedStatusCode())
-            Assert.fail("Expected response code was " + restSpecification.getExpectedStatusCode() + " but got " + response.statusCode());
+                && response.getStatusCode() != restSpecification.getExpectedStatusCode()) {
+            String msg = "Expected response code was " + restSpecification.getExpectedStatusCode() + " but got " + response.statusCode();
+            log.debug(msg);
+            Assert.fail(msg);
+        }
 
         return response;
     }
@@ -31,7 +40,7 @@ public class RestHelper {
                 .formParams(restSpecification.getFormParams())
                 .pathParams(restSpecification.getPathParams())
                 .cookies(restSpecification.getCookies())
-                .body(restSpecification.getBody())
+                .body(restSpecification.getBody() == null ? "" : restSpecification.getBody())
                 .contentType(restSpecification.getContentType());
     }
 

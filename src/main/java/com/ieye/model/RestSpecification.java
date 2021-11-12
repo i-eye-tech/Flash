@@ -21,7 +21,7 @@ public class RestSpecification {
     private Map<String, String> formParams = new HashMap<>();
     private Map<String, String> headers = new HashMap<>();
     private Map<String, String> cookies = new HashMap<>();
-    private Object body = new Object();
+    private Object body;
     private String contentType = "application/json";
     private Integer expectedStatusCode;
     private String expectedJson;

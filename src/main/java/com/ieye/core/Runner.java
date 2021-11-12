@@ -9,6 +9,7 @@ import com.ieye.model.StartRequestDTO;
 import com.ieye.repository.SchemaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.testng.TestNG;
@@ -21,6 +22,9 @@ import java.util.*;
 @Service
 @Slf4j
 public class Runner {
+
+    @Value("${flash.test.parallel.methods:4}")
+    private int noOfParallelMethods;
 
     @Autowired
     SchemaRepository schemaRepository;
@@ -55,7 +59,7 @@ public class Runner {
 
         XmlSuite xmlSuite = new XmlSuite();
         xmlSuite.setParameters(suiteParams);
-        xmlSuite.setDataProviderThreadCount(4);
+        xmlSuite.setDataProviderThreadCount(noOfParallelMethods);
         xmlSuite.setParallel(XmlSuite.ParallelMode.METHODS);
 
         Map<String, String> classParams = new HashMap<>();

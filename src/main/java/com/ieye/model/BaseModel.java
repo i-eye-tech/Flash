@@ -3,11 +3,13 @@ package com.ieye.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ieye.core.enums.RestMethod;
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Map;
 
 @Data @JsonIgnoreProperties(ignoreUnknown = true)
-public class BaseModel {
+@Document
+abstract class BaseModel {
 
     private Map<String, String> queryParams;
     private Map<String, String> formParams;

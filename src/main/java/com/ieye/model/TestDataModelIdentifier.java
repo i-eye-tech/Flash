@@ -2,16 +2,14 @@ package com.ieye.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @NoArgsConstructor
+@Document
 public class TestDataModelIdentifier {
 
-    @NonNull
     private String testCaseId;
-
-    @NonNull
     private String testDataId;
 
 }

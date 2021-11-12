@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.ITestContext;
+import org.testng.ITestResult;
 import org.testng.annotations.*;
 
 import java.util.List;
@@ -28,7 +29,6 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
     @Autowired
     protected CurrentTest currentTest;
 
-    @Autowired
     protected ApiSpecification apiSpecification;
 
     @BeforeClass(alwaysRun = true)
@@ -72,14 +72,20 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
     @Parameters("requestId")
     protected void createTest(String requestId, Object[] args){
         TestDataModel testDataModel = (TestDataModel) args[0];
-        reporter.createTest(testDataModel.getId().getTestCaseId(), testDataModel.getDescription());
+        currentTest.setExtentTest(reporter.createTest(testDataModel.getId().getTestCaseId(), testDataModel.getDescription()));
         currentTest.setRequestId(requestId);
         currentTest.setTestId(testDataModel.getId().getTestCaseId());
     }
 
     @AfterMethod
-    protected void afterMethod() {
-        reporter.pass();
+    protected void afterMethod(ITestResult result) {
+        if(result.isSuccess())
+            reporter.pass("Pass");
+        else {
+            reporter.fail(result.getThrowable().getMessage());
+            reporter.fail(result.getThrowable());
+        }
+        reporter.flush();
     }
 
 }

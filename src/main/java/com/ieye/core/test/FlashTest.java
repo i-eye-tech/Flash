@@ -29,7 +29,7 @@ public class FlashTest extends BaseTest {
 
     @Test(dataProvider = "testData")
     void genericValidatorTest(TestDataModel testDataModel) {
-        log.debug("Staring test method for {}", testDataModel.getId().getTestCaseId());
+        log.debug("Staring test method for {}", currentTest.getTestId());
         try {
             RestSpecification r1 = restManager.createRestSpecification(apiSpecification, testDataModel);
 
@@ -45,13 +45,14 @@ public class FlashTest extends BaseTest {
             }
             assertEquals(actual, expected);
 
-        } catch (Exception e) {
-            log.info("Exception in test {} for data {} & requestId {}. Exception: {}", currentTest.getRequestId(), testDataModel, currentTest.getTestId(), e.getMessage());
+        } catch (Exception | AssertionError e) {
+            log.info("Exception in test {} from request {} for data {} & requestId {}. Exception: {}", currentTest.getTestId(),
+                    currentTest.getRequestId(), testDataModel, currentTest.getTestId(), e.getMessage());
             log.error(Arrays.toString(e.getStackTrace()));
             throw e;
         }
 
-        log.debug("test method finished for {}", testDataModel.getId().getTestCaseId());
+        log.debug("test method finished for {}", currentTest.getTestId());
     }
 
 }

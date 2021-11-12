@@ -1,15 +1,16 @@
 package com.ieye.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NonNull;
+import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
+@Document
+@AllArgsConstructor @NoArgsConstructor
 public class SchemaIdentifier {
 
-    @NonNull
     private String projectId;
-
-    @NonNull
     private String testId;
 
     @Override

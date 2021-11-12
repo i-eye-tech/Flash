@@ -23,12 +23,12 @@ public class RestManager {
     @Autowired private Evaluator evaluator;
     @Autowired private CurrentTest currentTest;
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public RestSpecification createRestSpecification(ApiSpecification apiSpecification, TestDataModel testDataModel) {
         RestSpecification restSpecification = RestSpecification.builder().basePath(apiSpecification.getDomain())
                 .url(getPreferredValue(apiSpecification.getEndPoint(), testDataModel.getEndPoint()))
-                .method(RestMethod.valueOf(getPreferredValue(apiSpecification.getMethod().toString(), testDataModel.getMethod().toString())))
+                .method(RestMethod.valueOf(getPreferredValue(String.valueOf(apiSpecification.getMethod()), String.valueOf(testDataModel.getMethod()))))
                 .queryParams(getPreferredValue(apiSpecification.getQueryParams(), testDataModel.getQueryParams()))
                 .pathParams(getPreferredValue(apiSpecification.getPathParams(), testDataModel.getPathParams()))
                 .formParams(getPreferredValue(apiSpecification.getFormParams(), testDataModel.getFormParams()))
@@ -36,6 +36,7 @@ public class RestManager {
                 .contentType(getPreferredValue(apiSpecification.getContentType(), testDataModel.getContentType()))
                 .cookies(getPreferredValue(apiSpecification.getCookies(), testDataModel.getCookies()))
                 .headers(getPreferredValue(apiSpecification.getHeaders(), testDataModel.getHeaders()))
+                .body(evaluator.evaluate(testDataModel.getBody(), currentTest.getData()))
                 .build();
 
        ((ObjectNode) currentTest.getData()).putPOJO("request", objectMapper.valueToTree(restSpecification));
@@ -48,8 +49,8 @@ public class RestManager {
     */
 
     private String getPreferredValue(String s1, String s2) {
-        return StringUtils.isNotBlank(s2) ? evaluator.evaluate(s2, currentTest.getData()) :
-                evaluator.evaluate(s1, currentTest.getData());
+        return (StringUtils.isBlank(s2)  || s2.equalsIgnoreCase("null")) ?
+                evaluator.evaluate(s1, currentTest.getData()) : evaluator.evaluate(s2, currentTest.getData());
     }
 
     private Map<String, String> getPreferredValue(Map<String, String> m1, Map<String, String> m2) {
