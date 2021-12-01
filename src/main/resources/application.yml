@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: Flash
+  datasource:
+    url: jdbc:postgresql://ip:port/
+    username:
+    password:
+    mysql:
+      url: jdbc:mysql://ip:3306/
+      username:
+      password:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/flash
+
+
+server:
+  port: 8081
+  tomcat:
+   accesslog:
+    suffix:
+    file-date-format:
+    accesslog:
+      enabled: true
+      directory: /dev
+      prefix: stdout
+      buffered: false
+      pattern: '%t %a "%r" %s (%D ms)'
+  servlet:
+    context-path: /flash
+
+logging:
+  file:
+#    path: ${log_path}
+    name: flash.log
+
+s3:
+  accessKey: ""
+  secretKey: ""
+  bucketName: ""
+
+executor:
+  corePoolSize: 100
+  maxThreadPoolSize: 150
+  queueSize: 200
+  keepAliveTimeInSeconds: 100
+
+kafka:
+  bootstrapServers: ""
