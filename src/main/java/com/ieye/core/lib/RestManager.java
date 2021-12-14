@@ -10,6 +10,8 @@ import com.ieye.model.TestDataModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -18,6 +20,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class RestManager {
 
     @Autowired private Evaluator evaluator;
@@ -63,6 +66,5 @@ public class RestManager {
 
         return params;
     }
-
 
 }

@@ -1,6 +1,7 @@
 package com.ieye.core.helper;
 
 import com.ieye.core.enums.RestMethod;
+import com.ieye.core.lib.currenttest.CurrentTest;
 import com.ieye.model.RestSpecification;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -15,7 +16,7 @@ import org.testng.Assert;
 public class RestHelper {
 
     @Autowired
-    private Reporter reporter;
+    private CurrentTest currentTest;
 
     public Response execute(RestSpecification restSpecification) {
         RequestSpecification request = createRequest(restSpecification);

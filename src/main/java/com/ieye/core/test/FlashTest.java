@@ -1,5 +1,6 @@
 package com.ieye.core.test;
 
+import com.ieye.FlashApplication;
 import com.ieye.core.helper.RestHelper;
 import com.ieye.core.lib.RestManager;
 import com.ieye.core.lib.currenttest.CurrentTest;
@@ -14,7 +15,7 @@ import java.util.Arrays;
 
 import static org.testng.Assert.assertEquals;
 
-@SpringBootTest
+@SpringBootTest(classes = FlashApplication.class)
 @Slf4j
 public class FlashTest extends BaseTest {
 
@@ -25,11 +26,12 @@ public class FlashTest extends BaseTest {
     RestManager restManager;
 
     @Autowired
-    CurrentTest currentTest;
+    private CurrentTest currentTest;
 
     @Test(dataProvider = "testData")
     void genericValidatorTest(TestDataModel testDataModel) {
-        log.debug("Staring test method for {}", currentTest.getTestId());
+        log.debug("Test Method {}", currentTest);
+        log.debug("Staring test method for {} in thread {}", currentTest.getTestId(), Thread.currentThread().getId());
         try {
             RestSpecification r1 = restManager.createRestSpecification(apiSpecification, testDataModel);
 
@@ -43,16 +45,16 @@ public class FlashTest extends BaseTest {
             } else {
                 expected = r1.getExpectedJson();
             }
-            assertEquals(actual, expected);
 
+            assertEquals(actual, expected);
+            log.debug("test method finished for {}", currentTest.getTestId());
         } catch (Exception | AssertionError e) {
             log.info("Exception in test {} from request {} for data {} & requestId {}. Exception: {}", currentTest.getTestId(),
-                    currentTest.getRequestId(), testDataModel, currentTest.getTestId(), e.getMessage());
+                    currentTest.getRequestId(), testDataModel, currentTest.getRequestId(), e.getMessage());
             log.error(Arrays.toString(e.getStackTrace()));
+            log.debug("test method finished for {}", currentTest.getTestId());
             throw e;
         }
-
-        log.debug("test method finished for {}", currentTest.getTestId());
     }
 
 }

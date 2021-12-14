@@ -21,15 +21,15 @@ import java.util.List;
 abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
-    protected Reporter reporter;
-
-    @Autowired
     protected MongoHelper mongoHelper;
 
     @Autowired
-    protected CurrentTest currentTest;
+    CurrentTest currentTest;
 
     protected ApiSpecification apiSpecification;
+
+    @Autowired
+    private Reporter reporter;
 
     @BeforeClass(alwaysRun = true)
     @BeforeSuite(alwaysRun = true)
@@ -40,52 +40,73 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
     @BeforeSuite
     @Parameters("requestId")
-    protected void zBeforeSuite(String requestId) { reporter.generate(requestId); }
+    protected void zBeforeSuite(String requestId) {
+        log.debug("{} - Test Suite started.", requestId);
+        reporter.createReport(requestId);
+    }
 
     @BeforeClass
-    protected void beforeClass(ITestContext iTestContext) {
+    @Parameters("requestId")
+    protected void beforeClass(String requestId, ITestContext iTestContext) {
+        log.debug("{} - Before Class started.", requestId);
         try {
             ObjectMapper mapper = new ObjectMapper();
             String sApiSpecification = iTestContext.getCurrentXmlTest().getXmlClasses().get(0).getAllParameters()
                     .get("apiSpecification");
             apiSpecification = mapper.readValue(sApiSpecification, ApiSpecification.class);
         } catch (JsonProcessingException e) {
-            log.error("JsonProcessing Exception {} in data provider", e.getMessage());
+            log.error("{} - JsonProcessing Exception {} in data provider", currentTest.getRequestId(), e.getMessage());
         }
+        log.debug("{} - Before Class finished.", requestId);
     }
 
-    @DataProvider(parallel = true)
+    @DataProvider(parallel = false)
     protected Object[][] testData(ITestContext iTestContext) {
+        log.debug("DataProvider method started.");
         ObjectMapper mapper = new ObjectMapper();
         BasicDBObject basicDBObject = new BasicDBObject("_id.testDataId", apiSpecification.getId())
                 .append("active", true);
 
-        List<TestDataModel> testDataModelList = mongoHelper.getDataAsListOfMap(apiSpecification.getTestCollection(), basicDBObject);
+        List<TestDataModel> testDataModelList = mongoHelper.getDataAsListOfMap(apiSpecification.getTestCollection(),
+                basicDBObject);
         Object[][] output = new Object[testDataModelList.size()][1];
         for(int i=0; i< testDataModelList.size(); i++)
             output[i][0] = mapper.convertValue(testDataModelList.get(i), TestDataModel.class);
-
+        log.debug("DataProvider method finished.");
         return output;
     }
 
     @BeforeMethod
     @Parameters("requestId")
-    protected void createTest(String requestId, Object[] args){
+    protected void createTest(String requestId, Object[] args) {
+        log.debug("{} - Before Method started.", requestId);
         TestDataModel testDataModel = (TestDataModel) args[0];
-        currentTest.setExtentTest(reporter.createTest(testDataModel.getId().getTestCaseId(), testDataModel.getDescription()));
         currentTest.setRequestId(requestId);
         currentTest.setTestId(testDataModel.getId().getTestCaseId());
+        currentTest.setExtentTest(reporter.createTest(currentTest.getTestId(), requestId,
+                testDataModel.getDescription()));
+        log.debug("{} - Before Method finished {}.", requestId, currentTest);
     }
 
     @AfterMethod
     protected void afterMethod(ITestResult result) {
+        log.debug("{} - After Method started {}.", currentTest.getRequestId(), currentTest);
         if(result.isSuccess())
-            reporter.pass("Pass");
+            reporter.pass(currentTest.getExtentTest());
         else {
-            reporter.fail(result.getThrowable().getMessage());
-            reporter.fail(result.getThrowable());
+            log.debug("Error => {}", result.getThrowable().getMessage());
+            reporter.fail(currentTest.getExtentTest(), result.getThrowable().getMessage());
+            reporter.fail(currentTest.getExtentTest(), result.getThrowable());
         }
-        reporter.flush();
+        reporter.flush(currentTest.getRequestId());
+        log.debug("{} - After Method finished {}.", currentTest.getRequestId(), currentTest);
+    }
+
+    @AfterSuite
+    @Parameters("requestId")
+    protected void afterSuite(String requestId) {
+        reporter.remove(requestId);
+        log.debug("{} - Test Suite ended.", requestId);
     }
 
 }
