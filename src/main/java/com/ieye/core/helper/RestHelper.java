@@ -16,7 +16,10 @@ import org.testng.Assert;
 public class RestHelper {
 
     @Autowired
-    private CurrentTest currentTest;
+    CurrentTest currentTest;
+
+    @Autowired
+    Reporter reporter;
 
     public Response execute(RestSpecification restSpecification) {
         RequestSpecification request = createRequest(restSpecification);
