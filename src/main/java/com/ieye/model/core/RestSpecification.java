@@ -1,4 +1,4 @@
-package com.ieye.model;
+package com.ieye.model.core;
 
 import com.ieye.core.enums.RestMethod;
 import lombok.AllArgsConstructor;

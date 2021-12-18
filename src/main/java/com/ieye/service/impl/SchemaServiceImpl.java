@@ -1,8 +1,8 @@
 package com.ieye.service.impl;
 
-import com.ieye.model.ApiSpecification;
-import com.ieye.model.Schema;
-import com.ieye.model.SchemaIdentifier;
+import com.ieye.model.core.ApiSpecification;
+import com.ieye.model.core.Schema;
+import com.ieye.model.core.SchemaIdentifier;
 import com.ieye.model.exception.SchemaNotFoundException;
 import com.ieye.repository.SchemaRepository;
 import com.ieye.service.SchemaService;

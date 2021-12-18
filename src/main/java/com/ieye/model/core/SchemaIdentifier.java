@@ -1,4 +1,4 @@
-package com.ieye.model;
+package com.ieye.model.core;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.ieye.model;
+package com.ieye.model.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ieye.core.enums.RestMethod;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Data @JsonIgnoreProperties(ignoreUnknown = true)
 @Document
-abstract class BaseModel {
+abstract class BaseRestTemplate {
 
     private Map<String, String> queryParams;
     private Map<String, String> formParams;

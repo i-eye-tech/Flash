@@ -2,7 +2,7 @@ package com.ieye.core.helper;
 
 import com.ieye.core.enums.RestMethod;
 import com.ieye.core.lib.currenttest.CurrentTest;
-import com.ieye.model.RestSpecification;
+import com.ieye.model.core.RestSpecification;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;

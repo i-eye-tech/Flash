@@ -1,6 +1,6 @@
 package com.ieye.model.dto;
 
-import com.ieye.model.ApiSpecification;
+import com.ieye.model.core.ApiSpecification;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

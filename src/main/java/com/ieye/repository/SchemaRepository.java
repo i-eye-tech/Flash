@@ -1,7 +1,7 @@
 package com.ieye.repository;
 
-import com.ieye.model.Schema;
-import com.ieye.model.SchemaIdentifier;
+import com.ieye.model.core.Schema;
+import com.ieye.model.core.SchemaIdentifier;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

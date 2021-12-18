@@ -1,6 +1,6 @@
 package com.ieye.model.mapper;
 
-import com.ieye.model.ApiSpecification;
+import com.ieye.model.core.ApiSpecification;
 import com.ieye.model.dto.GetApiSpecResponseDTO;
 import org.springframework.stereotype.Service;
 

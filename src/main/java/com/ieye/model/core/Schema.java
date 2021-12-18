@@ -1,4 +1,4 @@
-package com.ieye.model;
+package com.ieye.model.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;

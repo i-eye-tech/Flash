@@ -1,7 +1,7 @@
 package com.ieye.controller;
 
-import com.ieye.model.ApiSpecification;
-import com.ieye.model.SchemaIdentifier;
+import com.ieye.model.core.ApiSpecification;
+import com.ieye.model.core.SchemaIdentifier;
 import com.ieye.model.dto.GetApiSpecResponseDTO;
 import com.ieye.model.mapper.GetSpecificationMapper;
 import com.ieye.service.SchemaService;

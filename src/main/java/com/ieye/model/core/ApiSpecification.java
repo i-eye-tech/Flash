@@ -1,4 +1,4 @@
-package com.ieye.model;
+package com.ieye.model.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Document
-public class ApiSpecification extends BaseModel {
+public class ApiSpecification extends BaseRestTemplate {
 
     @Id
     private String id;
