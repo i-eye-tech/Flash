@@ -25,7 +25,7 @@ public class ExtentManager {
     @Value("${flash.report.document.title:Flash API Automation Report}")
     private String documentTitle;
 
-    private final static ConcurrentMap<String, ExtentReports> reports = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, ExtentReports> reports = new ConcurrentHashMap<>();
 
     public ExtentReports getExtent(String requestId) {
         if(reports.containsKey(requestId))
