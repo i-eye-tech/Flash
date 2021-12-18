@@ -28,7 +28,7 @@ public class RestHelper {
         if(restSpecification.getExpectedStatusCode() != null
                 && response.getStatusCode() != restSpecification.getExpectedStatusCode()) {
             String msg = "Expected response code was " + restSpecification.getExpectedStatusCode() + " but got " + response.statusCode();
-            log.debug(msg);
+            log.debug("{} - {}", currentTest.getRequestId(), msg);
             Assert.fail(msg);
         }
 

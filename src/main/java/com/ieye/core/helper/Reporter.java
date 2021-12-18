@@ -16,6 +16,7 @@ final public class Reporter {
 
     public void createReport(String requestId) {
         extentManager.getExtent(requestId);
+        flush(requestId);
     }
 
     public ExtentTest createTest(String testId, String requestId, String description) {

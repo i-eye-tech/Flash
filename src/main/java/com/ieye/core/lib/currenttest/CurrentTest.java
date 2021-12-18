@@ -5,12 +5,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
-import org.springframework.test.annotation.DirtiesContext;
 
 @Data
 @Component
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Scope(value = "testscope", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class CurrentTest {
 
     private String requestId;

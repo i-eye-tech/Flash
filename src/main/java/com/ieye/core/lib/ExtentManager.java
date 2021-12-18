@@ -27,11 +27,13 @@ public class ExtentManager {
 
     private final static ConcurrentMap<String, ExtentReports> reports = new ConcurrentHashMap<>();
 
-    public synchronized ExtentReports getExtent(String requestId) {
+    public ExtentReports getExtent(String requestId) {
         if(reports.containsKey(requestId))
             return reports.get(requestId);
         else
-            return reports.put(requestId, createReport(requestId));
+            synchronized (this) {
+                return reports.put(requestId, createReport(requestId));
+            }
     }
 
     private ExtentReports createReport(String requestId) {
