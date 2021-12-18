@@ -37,7 +37,7 @@ public class ExtentManager {
     }
 
     private ExtentReports createReport(String requestId) {
-        String reportName = prefix + "_" + DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss").format(LocalDateTime.now()) + ".html";
+        String reportName = prefix + "-" + requestId + ".html";
         log.debug("{} - Creating report {}.", requestId, reportName);
         ExtentReports extentReport = new ExtentReports();
 

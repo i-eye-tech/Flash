@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-final public class Reporter {
+public final class Reporter {
 
     @Autowired
     ExtentManager extentManager;
