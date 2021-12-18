@@ -9,7 +9,7 @@ import lombok.Data;
 public class StartResponseDTO {
 
     private String requestId;
-    private String restId;
+    private String testId;
     private String projectId;
 
 }
