@@ -30,7 +30,7 @@ public class TestManager {
         return false;
     }
 
-    public boolean validate(List<ValidatorTemplate> validators, Response response) {
+    public boolean validate(List<ValidatorTemplate> validators, String response) {
         if(validators == null || validators.isEmpty())
             return true;
 
@@ -92,20 +92,21 @@ public class TestManager {
         return result;
     }
 
-    private boolean validateRestAction(ValidatorTemplate validator, Response response) {
+    private boolean validateRestAction(ValidatorTemplate validator, String response) {
         if(validator.getFields().isEmpty())
             return true;
 
         return validator.getFields().entrySet().stream().map(map -> {
             boolean flag;
             Object expected = patternResolver.resolve(map.getValue().toString(), currentTest.getData());
-            flag = response.jsonPath().getBoolean(map.getKey()) && response.jsonPath().get(map.getKey()).equals(expected);
+            String actual = patternResolver.readJsonPath(response, map.getKey());
+            flag = actual.equals(expected);
             if (!flag) {
                 reporter.fail(currentTest.getExtentTest(), String.format("Field: %s, Expected value: %s, Actual value: %s",
-                        map.getKey(), expected, response.jsonPath().get(map.getKey())));
+                        map.getKey(), expected, actual));
             } else
                 reporter.info(currentTest.getExtentTest(), String.format("Field: %s, Expected value: %s, Actual value: %s",
-                        map.getKey(), expected, response.jsonPath().get(map.getKey())));
+                        map.getKey(), expected, actual));
             return flag;
         }).reduce(Boolean::logicalAnd).orElse(false);
     }
