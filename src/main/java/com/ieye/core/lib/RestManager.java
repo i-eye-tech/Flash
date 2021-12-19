@@ -39,11 +39,11 @@ public class RestManager {
                 .contentType(getPreferredValue(apiSpecification.getContentType(), testDataModel.getContentType()))
                 .cookies(getPreferredValue(apiSpecification.getCookies(), testDataModel.getCookies()))
                 .headers(getPreferredValue(apiSpecification.getHeaders(), testDataModel.getHeaders()))
-                .body(patternResolver.resolve(testDataModel.getBody()))
+                .body(patternResolver.resolve(testDataModel.getBody(), currentTest.getData()))
                 .build();
 
        ((ObjectNode) currentTest.getData()).putPOJO("request", objectMapper.valueToTree(restSpecification));
-       restSpecification.setExpectedJson(patternResolver.resolve(testDataModel.getExpectedJson()));
+       restSpecification.setExpectedJson(patternResolver.resolve(testDataModel.getExpectedJson(), currentTest.getData()));
        return restSpecification;
     }
 
@@ -60,7 +60,7 @@ public class RestManager {
                 .contentType(restTemplate.getContentType())
                 .cookies(restTemplate.getCookies())
                 .headers(restTemplate.getHeaders())
-                .body(patternResolver.resolve(restTemplate.getBody()))
+                .body(patternResolver.resolve(restTemplate.getBody(), currentTest.getData()))
                 .build();
     }
 
