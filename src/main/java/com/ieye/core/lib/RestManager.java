@@ -3,6 +3,7 @@ package com.ieye.core.lib;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.ieye.core.enums.RestMethod;
+import com.ieye.core.helper.RestHelper;
 import com.ieye.core.lib.currenttest.CurrentTest;
 import com.ieye.model.core.ApiSpecification;
 import com.ieye.model.core.RestSpecification;
@@ -19,7 +20,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class RestManager {
+public final class RestManager {
 
     @Autowired
     PatternResolver patternResolver;

@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class ActionExecutioner {
+public final class ActionExecutioner {
 
     @Autowired
     CurrentTest currentTest;

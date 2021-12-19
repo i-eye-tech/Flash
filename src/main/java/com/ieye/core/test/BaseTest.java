@@ -89,6 +89,7 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
         currentTest.setTestId(testDataModel.getId().getTestCaseId());
         currentTest.setExtentTest(reporter.createTest(currentTest.getTestId(), requestId,
                 testDataModel.getDescription()));
+        reporter.flush(requestId);
         log.debug("{} - Before Method finished {}.", requestId, currentTest);
     }
 

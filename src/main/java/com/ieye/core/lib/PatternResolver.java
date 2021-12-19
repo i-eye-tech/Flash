@@ -20,9 +20,12 @@ public class PatternResolver {
     @Autowired
     CurrentTest currentTest;
 
+    @Autowired
+    EvaluatorEngine evaluatorEngine;
+
     private final ObjectMapper mapper = new ObjectMapper();
     private final String dataPattern = "${data.";
-    private final String evaluatorPattern = "${evaluate.";
+    private final String[] evaluatorPattern = new String[]{ "${evaluate.", "${eval."};
 
     public String resolve(String s1, JsonNode jsonNode) {
         if(!isAnExpression(s1))
@@ -36,7 +39,7 @@ public class PatternResolver {
         String method = getMethodName(s);
         String[] params = getParams(s);
 
-        Object value = null; //TODO: get value from evaluators
+        Object value = evaluatorEngine.evaluate(method, params);
         String replacement = "";
         try {
             replacement = value instanceof String ? value.toString() : mapper.writeValueAsString(value);
@@ -45,7 +48,7 @@ public class PatternResolver {
             log.error("{} - Exception while resolving evaluator pattern {}. Exception => {}",
                     currentTest.getRequestId(), method, e.getMessage());
         }
-        return s1.contains(evaluatorPattern) ? resolveUsingEvaluator(s1) : s1;
+        return s1.contains(evaluatorPattern[0]) ? resolveUsingEvaluator(s1) : s1;
     }
 
     private String resolveUsingData(String s1, String json) {
@@ -58,7 +61,7 @@ public class PatternResolver {
                 Object value = JsonPath.read(json, matcher.group(1));
                 replacement = value instanceof String ? value.toString() : mapper.writeValueAsString(value);
             } catch (Exception e) {
-                log.error("{} - Exception while resolving data pattern. Exception => {}",
+                log.error("{} - Exception while resolving data pattern. Exception: {}",
                         currentTest.getRequestId(), e.getMessage());
             }
             if(replacement == null)
@@ -72,7 +75,7 @@ public class PatternResolver {
     }
 
     private boolean isEvaluatorExpression(String s1) {
-        return s1.startsWith(evaluatorPattern);
+        return s1.startsWith(evaluatorPattern[0]);
     }
 
     private boolean isNonEvaluatorExpression(String s1) {
@@ -86,10 +89,10 @@ public class PatternResolver {
     }
 
     private String getExpression(String s) {
-        if(!s.contains(evaluatorPattern))
+        if(!(s.contains(evaluatorPattern[0])))
             return s;
 
-        int index = s.lastIndexOf(evaluatorPattern);
+        int index = s.lastIndexOf(evaluatorPattern[0]);
         return s.substring(index, s.indexOf('}', index) + 1);
 
     }
