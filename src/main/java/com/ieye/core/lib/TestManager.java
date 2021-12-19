@@ -3,7 +3,6 @@ package com.ieye.core.lib;
 import com.ieye.core.helper.Reporter;
 import com.ieye.core.lib.currenttest.CurrentTest;
 import com.ieye.model.core.ValidatorTemplate;
-import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
