@@ -2,7 +2,6 @@ package com.ieye.core.test;
 
 import com.ieye.FlashApplication;
 import com.ieye.core.lib.TestManager;
-import com.ieye.model.core.ActionType;
 import com.ieye.model.core.RestSpecification;
 import com.ieye.model.core.TestDataModel;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
-
-import static org.testng.Assert.assertEquals;
 
 @SpringBootTest(classes = FlashApplication.class)
 @Slf4j
