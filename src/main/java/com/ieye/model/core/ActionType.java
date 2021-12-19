@@ -1,6 +1,6 @@
 package com.ieye.model.core;
 
-public enum PreActionType {
+public enum ActionType {
 
     REST
 

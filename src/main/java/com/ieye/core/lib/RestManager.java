@@ -6,12 +6,11 @@ import com.ieye.core.enums.RestMethod;
 import com.ieye.core.lib.currenttest.CurrentTest;
 import com.ieye.model.core.ApiSpecification;
 import com.ieye.model.core.RestSpecification;
+import com.ieye.model.core.RestTemplate;
 import com.ieye.model.core.TestDataModel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -20,11 +19,10 @@ import java.util.Map;
 
 @Slf4j
 @Component
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class RestManager {
 
-    @Autowired private Evaluator evaluator;
-    @Autowired private CurrentTest currentTest;
+    @Autowired Evaluator evaluator;
+    @Autowired CurrentTest currentTest;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -45,6 +43,22 @@ public class RestManager {
        ((ObjectNode) currentTest.getData()).putPOJO("request", objectMapper.valueToTree(restSpecification));
        restSpecification.setExpectedJson(evaluator.evaluate(testDataModel.getExpectedJson(), currentTest.getData()));
        return restSpecification;
+    }
+
+    public RestSpecification createRestSpecification(ApiSpecification apiSpecification, RestTemplate restTemplate) {
+        return RestSpecification.builder().basePath(restTemplate.getDomain())
+                .url(getPreferredValue(restTemplate.getEndPoint(), restTemplate.getEndPoint()))
+                .method(RestMethod.valueOf(getPreferredValue(String.valueOf(restTemplate.getMethod()),
+                        String.valueOf(restTemplate.getMethod()))))
+                .queryParams(getPreferredValue(restTemplate.getQueryParams(), restTemplate.getQueryParams()))
+                .pathParams(getPreferredValue(restTemplate.getPathParams(), restTemplate.getPathParams()))
+                .formParams(getPreferredValue(restTemplate.getFormParams(), restTemplate.getFormParams()))
+                .expectedStatusCode(restTemplate.getExpectedStatusCode())
+                .contentType(getPreferredValue(restTemplate.getContentType(), restTemplate.getContentType()))
+                .cookies(getPreferredValue(restTemplate.getCookies(), restTemplate.getCookies()))
+                .headers(getPreferredValue(restTemplate.getHeaders(), restTemplate.getHeaders()))
+                .body(evaluator.evaluate(restTemplate.getBody(), currentTest.getData()))
+                .build();
     }
 
     /*

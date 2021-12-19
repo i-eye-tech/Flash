@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ieye.core.helper.Reporter;
 import com.ieye.core.helper.database.MongoHelper;
+import com.ieye.core.lib.ActionExecutioner;
 import com.ieye.core.lib.currenttest.CurrentTest;
 import com.ieye.model.core.ApiSpecification;
 import com.ieye.model.core.TestDataModel;
@@ -30,6 +31,9 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
     private Reporter reporter;
+
+    @Autowired
+    ActionExecutioner actionExecutioner;
 
     @BeforeClass(alwaysRun = true)
     @BeforeSuite(alwaysRun = true)
@@ -60,7 +64,7 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
         log.debug("{} - Before Class finished.", requestId);
     }
 
-    @DataProvider(parallel = false)
+    @DataProvider(parallel = true)
     protected Object[][] testData(ITestContext iTestContext) {
         log.debug("DataProvider method started.");
         ObjectMapper mapper = new ObjectMapper();
@@ -100,6 +104,40 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
         }
         reporter.flush(currentTest.getRequestId());
         log.debug("{} - After Method finished {}.", currentTest.getRequestId(), currentTest);
+    }
+
+    @BeforeMethod
+    @Parameters("requestId")
+    protected void executePreActions(String requestId, Object[] args) {
+        TestDataModel testDataModel = (TestDataModel) args[0];
+        if(testDataModel.getPreSteps() == null || testDataModel.getPreSteps().isEmpty())
+            return;
+        log.debug("{} - Pre execution started {}.", requestId, currentTest);
+        try {
+            actionExecutioner.execute(apiSpecification, testDataModel.getPreSteps());
+        } catch (Exception | AssertionError e) {
+            log.error("{} - Error in pre-execution {}", requestId, e.getMessage());
+            reporter.fail(currentTest.getExtentTest(), "Error in pre-execution");
+            reporter.fail(currentTest.getExtentTest(), e);
+        }
+        log.debug("{} - Pre execution finished {}.", requestId, currentTest);
+    }
+
+    @AfterMethod
+    @Parameters("requestId")
+    protected void executePostActions(String requestId, Object[] args) {
+        TestDataModel testDataModel = (TestDataModel) args[0];
+        if(testDataModel.getPostSteps() == null || testDataModel.getPostSteps().isEmpty())
+            return;
+        log.debug("{} - Post execution started {}.", requestId, currentTest);
+        try {
+            actionExecutioner.execute(apiSpecification, testDataModel.getPostSteps());
+        } catch (Exception | AssertionError e) {
+            log.error("{} - Error in post-execution {}", requestId, e.getMessage());
+            reporter.fail(currentTest.getExtentTest(), "Error in post-execution");
+            reporter.fail(currentTest.getExtentTest(), e);
+        }
+        log.debug("{} - Post execution finished {}.", requestId, currentTest);
     }
 
     @AfterSuite

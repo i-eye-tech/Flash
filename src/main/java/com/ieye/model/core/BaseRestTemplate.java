@@ -11,6 +11,7 @@ import java.util.Map;
 @Document
 abstract class BaseRestTemplate {
 
+    private String domain;
     private Map<String, String> queryParams;
     private Map<String, String> formParams;
     private Map<String, String> pathParams;

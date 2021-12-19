@@ -8,7 +8,7 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Action {
 
-    private PreActionType type;
+    private ActionType type;
 
     @JsonAlias({"request", "requestSpecification"})
     private RestTemplate rest;
@@ -17,7 +17,7 @@ public class Action {
     private DatabaseTemplate database;
 
     @JsonAlias("sleepinMillis")
-    private int sleepInMs;
+    private int sleepInMs = 0;
 
     private boolean active = true;
 

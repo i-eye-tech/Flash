@@ -17,7 +17,6 @@ public class ApiSpecification extends BaseRestTemplate {
     private String id;
     private String validationType = "FlashTest";
     private String testCollection;
-    private String domain;
     private String stableDomain;
 
 }
