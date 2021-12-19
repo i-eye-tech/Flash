@@ -10,6 +10,6 @@ import org.springframework.stereotype.Component;
 public class CustomEvaluators {
 
     @Autowired
-    CurrentTest currentTest;
+    protected CurrentTest currentTest;
 
 }

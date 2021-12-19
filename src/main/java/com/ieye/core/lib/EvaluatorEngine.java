@@ -1,9 +1,7 @@
 package com.ieye.core.lib;
 
 import com.ieye.core.helper.CustomEvaluators;
-import com.ieye.core.lib.currenttest.CurrentTest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
@@ -11,9 +9,6 @@ import java.lang.reflect.InvocationTargetException;
 @Component
 @Slf4j
 public final class EvaluatorEngine extends CustomEvaluators {
-
-    @Autowired
-    CurrentTest currentTest;
 
     public Object evaluate(String evaluatorName, String... args) {
         if(evaluatorName == null || evaluatorName.trim().isEmpty())
