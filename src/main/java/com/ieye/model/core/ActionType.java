@@ -2,6 +2,6 @@ package com.ieye.model.core;
 
 public enum ActionType {
 
-    REST
+    REST, QUERY_DATABASE, GET_DATA
 
 }

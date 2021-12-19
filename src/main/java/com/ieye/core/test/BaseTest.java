@@ -3,8 +3,10 @@ package com.ieye.core.test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ieye.core.helper.Reporter;
+import com.ieye.core.helper.RestHelper;
 import com.ieye.core.helper.database.MongoHelper;
 import com.ieye.core.lib.ActionExecutioner;
+import com.ieye.core.lib.RestManager;
 import com.ieye.core.lib.currenttest.CurrentTest;
 import com.ieye.model.core.ApiSpecification;
 import com.ieye.model.core.TestDataModel;
@@ -21,19 +23,14 @@ import java.util.List;
 @Slf4j
 abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
-    @Autowired
-    protected MongoHelper mongoHelper;
-
-    @Autowired
-    CurrentTest currentTest;
+    @Autowired protected MongoHelper mongoHelper;
+    @Autowired CurrentTest currentTest;
+    @Autowired Reporter reporter;
+    @Autowired RestHelper restHelper;
+    @Autowired RestManager restManager;
+    @Autowired ActionExecutioner actionExecutioner;
 
     protected ApiSpecification apiSpecification;
-
-    @Autowired
-    private Reporter reporter;
-
-    @Autowired
-    ActionExecutioner actionExecutioner;
 
     @BeforeClass(alwaysRun = true)
     @BeforeSuite(alwaysRun = true)

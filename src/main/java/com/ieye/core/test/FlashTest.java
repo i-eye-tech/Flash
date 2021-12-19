@@ -1,13 +1,10 @@
 package com.ieye.core.test;
 
 import com.ieye.FlashApplication;
-import com.ieye.core.helper.RestHelper;
-import com.ieye.core.lib.RestManager;
-import com.ieye.core.lib.currenttest.CurrentTest;
+import com.ieye.model.core.ActionType;
 import com.ieye.model.core.RestSpecification;
 import com.ieye.model.core.TestDataModel;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.testng.annotations.Test;
 
@@ -19,19 +16,10 @@ import static org.testng.Assert.assertEquals;
 @Slf4j
 public class FlashTest extends BaseTest {
 
-    @Autowired
-    RestHelper restHelper;
-
-    @Autowired
-    RestManager restManager;
-
-    @Autowired
-    private CurrentTest currentTest;
-
     @Test(dataProvider = "testData")
     void genericValidatorTest(TestDataModel testDataModel) {
-        log.debug("Test Method {}", currentTest);
-        log.debug("Staring test method for {} in thread {}", currentTest.getTestId(), Thread.currentThread().getId());
+        log.debug("{} - Staring test method for {} in thread {}", currentTest.getRequestId(),
+                currentTest.getTestId(), Thread.currentThread().getId());
         try {
             RestSpecification r1 = restManager.createRestSpecification(apiSpecification, testDataModel);
 
@@ -45,12 +33,21 @@ public class FlashTest extends BaseTest {
             } else {
                 expected = r1.getExpectedJson();
             }
-
             assertEquals(actual, expected);
-            log.debug("test method finished for {}", currentTest.getTestId());
+
+            if(testDataModel.getValidator() != null && !testDataModel.getValidator().isEmpty()) {
+                testDataModel.getValidator().forEach(n -> {
+                    if(n.getType().equals(ActionType.REST) && !n.getFields().isEmpty()) {
+
+                    } else if(n.getType().equals(ActionType.GET_DATA) || n.getType().equals(ActionType.QUERY_DATABASE)) {
+
+                    }
+                });
+            }
+            log.debug("{} - test method finished for {}", currentTest.getRequestId(), currentTest.getTestId());
         } catch (Exception | AssertionError e) {
-            log.info("Exception in test {} from request {} for data {} & requestId {}. Exception: {}", currentTest.getTestId(),
-                    currentTest.getRequestId(), testDataModel, currentTest.getRequestId(), e.getMessage());
+            log.info("{} -  Exception in test {} for data {} & requestId {}. Exception: {}", currentTest.getRequestId(),
+                    currentTest.getTestId(), testDataModel, currentTest.getRequestId(), e.getMessage());
             log.error(Arrays.toString(e.getStackTrace()));
             log.debug("test method finished for {}", currentTest.getTestId());
             throw e;

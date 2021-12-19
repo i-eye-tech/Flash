@@ -34,6 +34,14 @@ public class PatternResolver {
         return resolveUsingEvaluator(s1);
     }
 
+    public <T> T readJsonPath(String json, Object jsonPathOrValue) {
+        try {
+            return JsonPath.read(json, jsonPathOrValue.toString());
+        } catch (Exception e) {
+            return (T) jsonPathOrValue;
+        }
+    }
+
     private String resolveUsingEvaluator(String s1) {
         String s = getExpression(s1);
         String method = getMethodName(s);

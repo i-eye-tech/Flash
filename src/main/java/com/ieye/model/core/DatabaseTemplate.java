@@ -9,7 +9,7 @@ import lombok.Data;
 public class DatabaseTemplate {
 
     @JsonAlias("dbType")
-    private DatabaseType type;
+    private DatabaseType type = DatabaseType.MONGO;
 
     private String databaseName;
     private String query;
