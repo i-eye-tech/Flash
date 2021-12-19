@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @NoArgsConstructor
 @Document
-abstract class TestDataModelIdentifier {
+public class TestDataModelIdentifier {
 
     private String testCaseId;
     private String testDataId;

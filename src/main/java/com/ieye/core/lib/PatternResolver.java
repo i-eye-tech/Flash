@@ -8,20 +8,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class Evaluator {
+public class PatternResolver {
 
     @Autowired
     CurrentTest currentTest;
 
-    public String evaluate(String s1, JsonNode jsonNode) {
+    public String resolve(String s1, JsonNode jsonNode) {
         String json = jsonNode.toString();
         if(!isAnExpression(s1))
             return s1;
         return "";
     }
 
-    public String evaluate(String s1) {
-        return evaluate(s1, currentTest.getData());
+    public String resolve(String s1) {
+        return resolve(s1, currentTest.getData());
     }
 
     private String resolveUsingEvaluator(String s1, String json) {

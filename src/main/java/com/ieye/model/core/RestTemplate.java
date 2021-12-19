@@ -9,6 +9,6 @@ public class RestTemplate extends BaseRestTemplate {
 
     private String expectedJson;
     private String body;
-    private int expectedStatusCode;
+    private Integer expectedStatusCode;
 
 }
