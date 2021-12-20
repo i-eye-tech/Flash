@@ -8,7 +8,7 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Action {
 
-    private ActionType type;
+    private ActionType type = ActionType.REST;
 
     @JsonAlias({"request", "requestSpecification"})
     private RestTemplate rest;

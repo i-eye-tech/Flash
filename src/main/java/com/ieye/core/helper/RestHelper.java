@@ -48,15 +48,27 @@ public class RestHelper {
         RequestSpecification requestSpecification = RestAssured.given()
                 .basePath(restSpecification.getUrl())
                 .baseUri(restSpecification.getBasePath())
-                .headers(restSpecification.getHeaders())
-                .queryParams(restSpecification.getPathParams())
-                .formParams(restSpecification.getFormParams())
-                .pathParams(restSpecification.getPathParams())
-                .cookies(restSpecification.getCookies())
                 .contentType(restSpecification.getContentType());
 
-        return restSpecification.getBody() == null ? requestSpecification :
-                requestSpecification.body(restSpecification.getBody());
+        if(restSpecification.getHeaders() != null && !restSpecification.getHeaders().isEmpty())
+            requestSpecification.headers(restSpecification.getHeaders());
+
+        if(restSpecification.getPathParams() != null && !restSpecification.getPathParams().isEmpty())
+            requestSpecification.pathParams(restSpecification.getPathParams());
+
+        if(restSpecification.getFormParams() != null && !restSpecification.getFormParams().isEmpty())
+            requestSpecification.formParams(restSpecification.getFormParams());
+
+        if(restSpecification.getQueryParams() != null && !restSpecification.getQueryParams().isEmpty())
+            requestSpecification.queryParams(restSpecification.getQueryParams());
+
+        if(restSpecification.getCookies() != null && !restSpecification.getCookies().isEmpty())
+            requestSpecification.cookies(restSpecification.getCookies());
+
+        if(restSpecification.getBody() != null && !restSpecification.getBody().toString().isEmpty())
+            requestSpecification.body(restSpecification.getBody());
+
+        return requestSpecification;
 
     }
 
