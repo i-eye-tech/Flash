@@ -1,5 +1,6 @@
 package com.ieye.model.core;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ieye.core.enums.RestMethod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RestSpecification {
 
     private String basePath;

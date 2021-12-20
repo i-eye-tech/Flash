@@ -29,6 +29,8 @@ public class TestManager {
 
     public boolean compareResponse(ApiSpecification apiSpecification, TestDataModel testDataModel,
                                    RestSpecification r1, String response) {
+        if(apiSpecification.getStableDomain() == null && testDataModel.getExpectedJson() == null)
+            return true;
         log.debug("{} - Start of method compare response for test {}", currentTest.getRequestId(), currentTest.getTestId());
         String expected;
         if(testDataModel.getExpectedJson() == null && apiSpecification.getStableDomain() != null) {

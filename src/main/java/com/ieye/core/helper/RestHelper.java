@@ -1,5 +1,7 @@
 package com.ieye.core.helper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ieye.core.enums.RestMethod;
 import com.ieye.core.lib.currenttest.CurrentTest;
 import com.ieye.model.core.RestSpecification;
@@ -25,6 +27,13 @@ public class RestHelper {
         RequestSpecification request = createRequest(restSpecification);
         Response response = send(request, restSpecification.getMethod());
 
+        try {
+            reporter.info(currentTest.getExtentTest(), String.format("%s %s%s%n%n%s%n%n",
+                    restSpecification.getMethod(), restSpecification.getBasePath(), restSpecification.getUrl(),
+                    new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(restSpecification)));
+        } catch (JsonProcessingException ignore) {}
+        reporter.info(currentTest.getExtentTest(), "Response:\n" + response.body().asPrettyString());
+
         if(restSpecification.getExpectedStatusCode() != null
                 && response.getStatusCode() != restSpecification.getExpectedStatusCode()) {
             String msg = "Expected response code was " + restSpecification.getExpectedStatusCode() + " but got "
@@ -36,16 +45,19 @@ public class RestHelper {
     }
 
     private RequestSpecification createRequest(RestSpecification restSpecification) {
-        return RestAssured.given()
-                .basePath(restSpecification.getBasePath())
-                .baseUri(restSpecification.getUrl())
+        RequestSpecification requestSpecification = RestAssured.given()
+                .basePath(restSpecification.getUrl())
+                .baseUri(restSpecification.getBasePath())
                 .headers(restSpecification.getHeaders())
                 .queryParams(restSpecification.getPathParams())
                 .formParams(restSpecification.getFormParams())
                 .pathParams(restSpecification.getPathParams())
                 .cookies(restSpecification.getCookies())
-                .body(restSpecification.getBody() == null ? "" : restSpecification.getBody())
                 .contentType(restSpecification.getContentType());
+
+        return restSpecification.getBody() == null ? requestSpecification :
+                requestSpecification.body(restSpecification.getBody());
+
     }
 
     private Response send(RequestSpecification requestSpecification, RestMethod method) {

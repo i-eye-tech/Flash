@@ -55,7 +55,7 @@ public class ExtentManager {
         extentReport.setSystemInfo("Operating System", System.getProperty("os.name"));
         extentReport.setSystemInfo("Request Id", requestId);
         extentReport.flush();
-        log.debug("{} - Report {} generated successfully.", requestId, reportName);
+        log.info("{} - Report {} generated successfully.", requestId, reportName);
         return extentReport;
     }
 
