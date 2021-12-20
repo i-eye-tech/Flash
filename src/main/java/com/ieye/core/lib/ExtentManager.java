@@ -26,6 +26,7 @@ public class ExtentManager {
     private String documentTitle;
 
     private static final ConcurrentMap<String, ExtentReports> reports = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, String> reportsMapping = new ConcurrentHashMap<>();
 
     public ExtentReports getExtent(String requestId) {
         if(reports.containsKey(requestId))
@@ -55,8 +56,13 @@ public class ExtentManager {
         extentReport.setSystemInfo("Operating System", System.getProperty("os.name"));
         extentReport.setSystemInfo("Request Id", requestId);
         extentReport.flush();
+        reportsMapping.put(requestId, reportName);
         log.info("{} - Report {} generated successfully.", requestId, reportName);
         return extentReport;
+    }
+
+    public String getReportName(String requestId) {
+        return reportsMapping.getOrDefault(requestId, null);
     }
 
     public ExtentReports remove(String requestId) {

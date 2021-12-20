@@ -53,4 +53,8 @@ public final class Reporter {
         extentManager.remove(requestId);
     }
 
+    public String getReportName(String requestId) {
+        return extentManager.getReportName(requestId);
+    }
+
 }
