@@ -26,6 +26,9 @@ public final class ActionExecutioner {
     @Autowired
     RestHelper restHelper;
 
+    @Autowired
+    DatabaseManager databaseManager;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ObjectNode emptyNode = objectMapper.createObjectNode();
 
@@ -51,6 +54,9 @@ public final class ActionExecutioner {
         switch (action.getType()) {
             case REST:
                 return getRestResponse(apiSpecification, action.getRest());
+            case QUERY_DATABASE:
+            case GET_DATA:
+                return databaseManager.getDatafromDB(action.getDatabase());
             default:
                 return null;
         }

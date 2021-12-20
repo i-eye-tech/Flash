@@ -13,16 +13,16 @@ import org.springframework.stereotype.Component;
 public class DatabaseManager {
 
     @Autowired
-    CurrentTest currentTest;
+    private CurrentTest currentTest;
 
     @Autowired
-    Reporter reporter;
+    private Reporter reporter;
 
     @Autowired
-    PatternResolver patternResolver;
+    private PatternResolver patternResolver;
 
     @Autowired
-    MongoHelper mongoHelper;
+    private MongoHelper mongoHelper;
 
     public <T> T getDatafromDB(DatabaseTemplate database) {
         if(database == null || database.getQuery() == null)
