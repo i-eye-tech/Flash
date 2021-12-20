@@ -1,5 +1,6 @@
 package com.ieye.core.lib;
 
+import com.ieye.core.helper.JsonComparator;
 import com.ieye.core.helper.Reporter;
 import com.ieye.core.helper.RestHelper;
 import com.ieye.core.lib.currenttest.CurrentTest;
@@ -24,6 +25,7 @@ public class TestManager {
     @Autowired PatternResolver patternResolver;
     @Autowired DatabaseManager databaseManager;
     @Autowired RestHelper restHelper;
+    @Autowired JsonComparator comparator;
 
     public boolean compareResponse(ApiSpecification apiSpecification, TestDataModel testDataModel,
                                    RestSpecification r1, String response) {
@@ -37,7 +39,7 @@ public class TestManager {
             expected = r1.getExpectedJson();
         }
         log.debug("{} - End of method compare response for test {}", currentTest.getRequestId(), currentTest.getTestId());
-        return response.equals(expected);
+        return comparator.compareJson(expected, response, null, null);
     }
 
     public boolean validate(List<ValidatorTemplate> validators, String response) {
