@@ -51,6 +51,7 @@ public class Runner {
 
     public void buildAndRunSuite(StartRequestDTO startRequestDTO, Schema schema, String requestId) {
         TestNG testNG = new TestNG();
+        testNG.setVerbose(0);
         Map<String, String> suiteParams = new HashMap<>();
         suiteParams.put("requestId", requestId);
         suiteParams.put("projectId", startRequestDTO.getProjectId());

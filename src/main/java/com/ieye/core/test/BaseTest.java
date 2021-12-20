@@ -14,6 +14,7 @@ import com.mongodb.BasicDBObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.ISuiteResult;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
@@ -140,9 +141,14 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
     @AfterSuite
     @Parameters("requestId")
-    protected void afterSuite(String requestId) {
+    protected void afterSuite(String requestId, ITestContext testContext) {
+        int pass = testContext.getPassedTests().size();
+        int fail = testContext.getFailedTests().size();
+        int skipped = testContext.getSkippedTests().size();
         reporter.remove(requestId);
         log.debug("{} - Test Suite ended.", requestId);
+        log.info("{} - Test finished successfully. Total: {}, Pass: {}, Fail: {}, Skipped: {}.",
+                requestId, pass + fail + skipped, pass, fail, skipped);
     }
 
 }
