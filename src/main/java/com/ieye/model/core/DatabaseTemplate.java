@@ -12,6 +12,7 @@ public class DatabaseTemplate {
     private DatabaseType type = DatabaseType.MONGO;
 
     private String databaseName;
+    private String collectionName;
     private String query;
 
 }

@@ -39,6 +39,10 @@ public final class Reporter {
             test.fail(MarkupHelper.createTable(((String[][]) o)));
     }
 
+    public void warn(ExtentTest test, String msg) {
+        test.warning(msg);
+    }
+
     public void info(ExtentTest test, String s) { test.info(MarkupHelper.createCodeBlock(s)); }
 
     public void flush(String requestId) {

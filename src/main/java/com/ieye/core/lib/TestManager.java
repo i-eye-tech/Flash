@@ -1,14 +1,17 @@
 package com.ieye.core.lib;
 
 import com.ieye.core.helper.Reporter;
+import com.ieye.core.helper.RestHelper;
 import com.ieye.core.lib.currenttest.CurrentTest;
+import com.ieye.model.core.ApiSpecification;
+import com.ieye.model.core.RestSpecification;
+import com.ieye.model.core.TestDataModel;
 import com.ieye.model.core.ValidatorTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,17 +19,25 @@ import java.util.Map;
 @Slf4j
 public class TestManager {
 
-    @Autowired
-    CurrentTest currentTest;
+    @Autowired CurrentTest currentTest;
+    @Autowired Reporter reporter;
+    @Autowired PatternResolver patternResolver;
+    @Autowired DatabaseManager databaseManager;
+    @Autowired RestHelper restHelper;
 
-    @Autowired
-    Reporter reporter;
-
-    @Autowired
-    PatternResolver patternResolver;
-
-    public boolean compareResponse(String expected, String actual) {
-        return false;
+    public boolean compareResponse(ApiSpecification apiSpecification, TestDataModel testDataModel,
+                                   RestSpecification r1, String response) {
+        log.debug("{} - Start of method compare response for test {}", currentTest.getRequestId(), currentTest.getTestId());
+        String expected;
+        if(testDataModel.getExpectedJson() == null && apiSpecification.getStableDomain() != null) {
+            RestSpecification r2 = new RestSpecification(r1);
+            r2.setBasePath(apiSpecification.getStableDomain());
+            expected = restHelper.execute(r2).asString();
+        } else {
+            expected = r1.getExpectedJson();
+        }
+        log.debug("{} - End of method compare response for test {}", currentTest.getRequestId(), currentTest.getTestId());
+        return response.equals(expected);
     }
 
     public boolean validate(List<ValidatorTemplate> validators, String response) {
@@ -56,7 +67,8 @@ public class TestManager {
         if(validator.getCount() == null && (validator.getFields().isEmpty() || validator.getFields() == null))
             return true;
 
-        List<Map<String, Object>> rows = new ArrayList<>(); // TODO: get data from db
+        log.debug("{} - Start of method validate db for test {}", currentTest.getRequestId(), currentTest.getTestId());
+        List<Map<String, Object>> rows = databaseManager.getDatafromDB(validator.getDatabase());
         reporter.info(currentTest.getExtentTest(), "Rows returned: \n " + StringUtils.join(rows, "\n"));
         boolean result = true;
         if(validator.getCount() != null) {
@@ -88,6 +100,7 @@ public class TestManager {
                 return flag;
             }).reduce(Boolean::logicalAnd).orElse(false);
         }
+        log.debug("{} - End of method validate db for test {}", currentTest.getRequestId(), currentTest.getTestId());
         return result;
     }
 
@@ -95,7 +108,9 @@ public class TestManager {
         if(validator.getFields().isEmpty())
             return true;
 
-        return validator.getFields().entrySet().stream().map(map -> {
+        log.debug("{} - Start of method validate rest for test {}.", currentTest.getRequestId(), currentTest.getTestId());
+
+        boolean result = validator.getFields().entrySet().stream().map(map -> {
             boolean flag;
             Object expected = patternResolver.resolve(map.getValue().toString(), currentTest.getData());
             String actual = patternResolver.readJsonPath(response, map.getKey());
@@ -108,6 +123,8 @@ public class TestManager {
                         map.getKey(), expected, actual));
             return flag;
         }).reduce(Boolean::logicalAnd).orElse(false);
+        log.debug("{} - End of method validate rest for test {}.", currentTest.getRequestId(), currentTest.getTestId());
+        return result;
     }
 
 }

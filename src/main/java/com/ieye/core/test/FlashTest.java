@@ -7,9 +7,12 @@ import com.ieye.model.core.TestDataModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
+
+import static org.testng.Assert.*;
 
 @SpringBootTest(classes = FlashApplication.class)
 @Slf4j
@@ -24,19 +27,19 @@ public class FlashTest extends BaseTest {
                 currentTest.getTestId(), Thread.currentThread().getId());
         try {
             RestSpecification r1 = restManager.createRestSpecification(apiSpecification, testDataModel);
-
             String actual = restHelper.execute(r1).asString();
-            String expected;
 
-            if(testDataModel.getExpectedJson() == null) {
-                RestSpecification r2 = new RestSpecification(r1);
-                r2.setBasePath(apiSpecification.getStableDomain());
-                expected = restHelper.execute(r2).asString();
+            if(testDataModel.getExpectedJson() == null && apiSpecification.getStableDomain() == null &&
+                        testDataModel.getValidator() == null) {
+                reporter.warn(currentTest.getExtentTest(),
+                        "No validators found in the test. Please add a stable domain or expected json or" +
+                                " a validator.");
             } else {
-                expected = r1.getExpectedJson();
+                assertTrue(testManager.compareResponse(apiSpecification, testDataModel, r1, actual));
+                assertTrue(testManager.validate(testDataModel.getValidator(), actual));
             }
-            testManager.compareResponse(expected, actual);
-            testManager.validate(testDataModel.getValidator(), actual);
+
+
             log.debug("{} - test method finished for {}", currentTest.getRequestId(), currentTest.getTestId());
         } catch (Exception | AssertionError e) {
             log.info("{} -  Exception in test {} for data {} & requestId {}. Exception: {}", currentTest.getRequestId(),
