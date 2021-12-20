@@ -25,7 +25,7 @@ public class PatternResolver {
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final String dataPattern = "${data.";
-    private final String[] evaluatorPattern = new String[]{ "${evaluate.", "${eval."};
+    private final String[] evaluatorPattern = new String[]{ "${evaluate(", "${eval("};
 
     public String resolve(String s1, JsonNode jsonNode) {
         if(!isAnExpression(s1))
@@ -43,6 +43,8 @@ public class PatternResolver {
     }
 
     private String resolveUsingEvaluator(String s1) {
+        if(!isEvaluatorExpression(s1))
+            return s1;
         String s = getExpression(s1);
         String method = getMethodName(s);
         String[] params = getParams(s);
@@ -60,7 +62,9 @@ public class PatternResolver {
     }
 
     private String resolveUsingData(String s1, String json) {
-        Pattern pattern = Pattern.compile("");
+        if(!isNonEvaluatorExpression(s1))
+            return s1;
+        Pattern pattern = Pattern.compile("\\$\\{data.(.+?)\\}");
         Matcher matcher = pattern.matcher(s1);
         StringBuffer buffer = new StringBuffer();
         while (matcher.find()) {
@@ -83,11 +87,11 @@ public class PatternResolver {
     }
 
     private boolean isEvaluatorExpression(String s1) {
-        return s1.startsWith(evaluatorPattern[0]);
+        return s1.contains(evaluatorPattern[0]);
     }
 
     private boolean isNonEvaluatorExpression(String s1) {
-        return s1.startsWith(dataPattern);
+        return s1.contains(dataPattern);
     }
 
     private boolean isAnExpression(String s1) {
@@ -102,19 +106,18 @@ public class PatternResolver {
 
         int index = s.lastIndexOf(evaluatorPattern[0]);
         return s.substring(index, s.indexOf('}', index) + 1);
-
     }
 
     private String getMethodName(String s1) {
         int index = s1.indexOf(",");
-        return index > 0 ? s1.trim().substring(s1.indexOf("{") + 1, index) : s1;
+        return s1.trim().substring(s1.indexOf("(") + 1, index > 0 ? index : s1.indexOf(")"));
     }
 
     private String[] getParams(String s1) {
         if(s1 == null)
             return new String[0];
         int index = s1.indexOf(",");
-        String s = index > 0 ? s1.trim().substring(index + 1, s1.length()-1) : "";
+        String s = index > 0 ? s1.trim().substring(index + 1, s1.length()-2) : "";
         return Arrays.stream(s.split(",")).map(String::trim).toArray(String[]::new);
     }
 
