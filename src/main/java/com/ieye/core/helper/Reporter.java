@@ -24,7 +24,12 @@ public final class Reporter {
         return extentManager.getExtent(requestId).createTest(testId, description);
     }
 
-    public void pass(ExtentTest test, String msg) { test.pass(msg); }
+    public void pass(ExtentTest test, Object o) {
+        if(o instanceof String)
+            test.pass(String.valueOf(o));
+        else if(o instanceof String[][])
+            test.info(MarkupHelper.createTable(((String[][]) o)));
+    }
 
     public void pass(ExtentTest test) {
         test.pass("Pass");
@@ -43,7 +48,12 @@ public final class Reporter {
         test.warning(msg);
     }
 
-    public void info(ExtentTest test, String s) { test.info(MarkupHelper.createCodeBlock(s)); }
+    public void info(ExtentTest test, Object o) {
+        if(o instanceof String)
+            test.info(MarkupHelper.createCodeBlock(String.valueOf(o)));
+        else if(o instanceof String[][])
+            test.info(MarkupHelper.createTable(((String[][]) o)));
+    }
 
     public void flush(String requestId) {
         extentManager.getExtent(requestId).flush();

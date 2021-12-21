@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -90,20 +91,24 @@ public class TestManager {
         if(rows == null || rows.isEmpty())
             return result;
 
+        List<String[]> comparisonList = new ArrayList<>();
+        comparisonList.add(new String[] {"Field", "Expected", "Actual", "Result"});
         if(validator.getFields() != null && !validator.getFields().isEmpty()) {
             result &= validator.getFields().entrySet().stream().map(n -> {
                 boolean flag = rows.get(0).containsKey(n.getKey());
                 if(flag){
                     String expected = patternResolver.resolve(n.getValue().toString(), currentTest.getData());
-                    flag = rows.get(0).get(n.getKey()).equals(expected);
-                    reporter.info(currentTest.getExtentTest(), String.format("Expected value: %s, Actual value: %s",
-                            expected, rows.get(0).get(n.getKey())));
+                    String actual = rows.get(0).get(n.getKey()).toString();
+                    flag = actual.equals(expected);
+                    comparisonList.add(new String[] {n.getKey(), expected, actual, flag ? "PASS" : "FAIL" });
                 } else {
                     reporter.fail(currentTest.getExtentTest(), String.format("Field %s not found in query output.", n.getKey()));
                 }
                 return flag;
             }).reduce(Boolean::logicalAnd).orElse(false);
         }
+        if(comparisonList.size() > 1)
+            reporter.info(currentTest.getExtentTest(), comparisonList);
         log.debug("{} - End of method validate db for test {}", currentTest.getRequestId(), currentTest.getTestId());
         return result;
     }
@@ -114,19 +119,18 @@ public class TestManager {
 
         log.debug("{} - Start of method validate rest for test {}.", currentTest.getRequestId(), currentTest.getTestId());
 
+        List<String[]> comparisonList = new ArrayList<>();
+        comparisonList.add(new String[] {"Field", "Expected", "Actual", "Result"});
         boolean result = validator.getFields().entrySet().stream().map(map -> {
             boolean flag;
             Object expected = patternResolver.resolve(map.getValue().toString(), currentTest.getData());
             String actual = patternResolver.readJsonPath(response, map.getKey());
             flag = actual.equals(expected);
-            if (!flag) {
-                reporter.fail(currentTest.getExtentTest(), String.format("Field: %s, Expected value: %s, Actual value: %s",
-                        map.getKey(), expected, actual));
-            } else
-                reporter.info(currentTest.getExtentTest(), String.format("Field: %s, Expected value: %s, Actual value: %s",
-                        map.getKey(), expected, actual));
+            comparisonList.add(new String[] {map.getKey(), expected.toString(), actual, flag ? "PASS" : "FAIL" });
             return flag;
         }).reduce(Boolean::logicalAnd).orElse(false);
+        if(comparisonList.size() > 1)
+            reporter.info(currentTest.getExtentTest(), comparisonList.toArray(new String[0][]));
         log.debug("{} - End of method validate rest for test {}.", currentTest.getRequestId(), currentTest.getTestId());
         return result;
     }
