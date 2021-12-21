@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentMap;
 @Configuration
 public class ExtentManager {
 
-    @Value("${flash.report.logo:@null}")
+    @Value("${flash.report.logo:https://www.pinpng.com/pngs/m/5-53472_justice-league-reverse-flash-youth-t-shirt-reverse.png}")
     private String logo;
 
     @Value("${flash.report.prefix:}")
