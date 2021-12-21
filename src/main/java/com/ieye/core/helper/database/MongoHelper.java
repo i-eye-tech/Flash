@@ -10,6 +10,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.UpdateOptions;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -64,6 +65,10 @@ public class MongoHelper {
 
     public <T> T getDataAsListOfMap(String collectionName, BasicDBObject q) {
         return getDataAsListOfMap(database, collectionName, q);
+    }
+
+    public void updateOne(String collection, BasicDBObject q1, BasicDBObject q2, boolean upsert) {
+        mongoClient.getDatabase(database).getCollection(collection).updateOne(q1, q2, new UpdateOptions().upsert(upsert));
     }
 
 }

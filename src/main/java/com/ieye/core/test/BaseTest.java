@@ -144,10 +144,33 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
         int pass = testContext.getPassedTests().size();
         int fail = testContext.getFailedTests().size();
         int skipped = testContext.getSkippedTests().size();
+        double duration = (testContext.getEndDate().getTime() - testContext.getStartDate().getTime())/1000.0;
         reporter.remove(requestId);
+        updateMongo(requestId, pass + fail + skipped, pass, fail, skipped, duration, reporter.getReportName(requestId));
         log.debug("{} - Test Suite ended.", requestId);
         log.info("{} - Test finished successfully. Total: {}, Pass: {}, Fail: {}, Skipped: {}, Report: {}",
                 requestId, pass + fail + skipped, pass, fail, skipped, reporter.getReportName(requestId));
+    }
+
+    private void updateMongo(String requestId, int total, int passed, int failed, int skipped, double duration,
+                             String report) {
+        log.debug("{} - Start of method update mongo", requestId);
+        try {
+            BasicDBObject fields = new BasicDBObject("totalTestCases", total)
+                    .append("passedTestCases", passed).append("failedTestCases", failed)
+                    .append("skippedTestCases", skipped).append("duration", duration)
+                    .append("report", report);
+
+            BasicDBObject updateObject = new BasicDBObject("$set", fields)
+                    .append("$currentDate", new BasicDBObject("createdAt", true));
+
+            mongoHelper.updateOne("requests", new BasicDBObject("_id", requestId), updateObject, true);
+            log.debug("{} - MongoDB successfully updated with results.", requestId);
+        } catch (Exception e) {
+            log.error("{} - Exception while inserting request results in MongoDB. Exception => {}",
+                    currentTest.getRequestId(), e.getMessage());
+        }
+        log.debug("{} - End of method update mongo", requestId);
     }
 
 }
