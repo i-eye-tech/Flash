@@ -100,7 +100,9 @@ public class TestManager {
                     String expected = patternResolver.resolve(n.getValue().toString(), currentTest.getData());
                     String actual = rows.get(0).get(n.getKey()).toString();
                     flag = actual.equals(expected);
-                    comparisonList.add(new String[] {n.getKey(), expected, actual, flag ? "PASS" : "FAIL" });
+                    comparisonList.add(new String[] {n.getKey(), expected, actual,
+                            "<p style=\"font-weight: bold;\" class=\"" + (flag ? "badge log pass-bg" : "badge log fail-bg") + "\">" +
+                                    (flag ? "PASS" : "FAIL" )});
                 } else {
                     reporter.fail(currentTest.getExtentTest(), String.format("Field %s not found in query output.", n.getKey()));
                 }
@@ -126,7 +128,9 @@ public class TestManager {
             Object expected = patternResolver.resolve(map.getValue().toString(), currentTest.getData());
             String actual = patternResolver.readJsonPath(response, map.getKey());
             flag = actual.equals(expected);
-            comparisonList.add(new String[] {map.getKey(), expected.toString(), actual, flag ? "PASS" : "FAIL" });
+            comparisonList.add(new String[] {map.getKey(), expected.toString(), actual,
+                    "<p style=\"font-weight: bold;\" class=\"" + (flag ? "badge log pass-bg" : "badge log fail-bg") + "\">" +
+                            (flag ? "PASS" : "FAIL" )});
             return flag;
         }).reduce(Boolean::logicalAnd).orElse(false);
         if(comparisonList.size() > 1)
