@@ -64,23 +64,18 @@ public class Runner {
         xmlSuite.setParallel(XmlSuite.ParallelMode.METHODS);
 
         Map<String, String> classParams = new HashMap<>();
-        List<XmlClass> xmlClasses = new ArrayList<>();
-
         ObjectMapper mapper = new ObjectMapper();
         schema.getApiSpec().forEach(n -> {
+            XmlTest xmlTest = new XmlTest(xmlSuite);
             XmlClass xmlClass = new XmlClass();
             xmlClass.setClass(FlashTest.class);
             try {
                 classParams.put("apiSpecification", mapper.writeValueAsString(n));
             } catch (JsonProcessingException ignore) {}
             xmlClass.setParameters(classParams);
-            xmlClasses.add(xmlClass);
+            xmlTest.getClasses().add(xmlClass);
         });
-
-        XmlTest xmlTest = new XmlTest(xmlSuite);
-        xmlTest.setXmlClasses(xmlClasses);
         testNG.setXmlSuites(Collections.singletonList(xmlSuite));
-
         testNG.run();
     }
 

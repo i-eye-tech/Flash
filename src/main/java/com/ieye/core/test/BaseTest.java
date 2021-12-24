@@ -14,6 +14,7 @@ import com.mongodb.BasicDBObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.ISuiteResult;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
@@ -141,10 +142,14 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
     @AfterSuite
     @Parameters("requestId")
     protected void afterSuite(String requestId, ITestContext testContext) {
-        int pass = testContext.getPassedTests().size();
-        int fail = testContext.getFailedTests().size();
-        int skipped = testContext.getSkippedTests().size();
-        double duration = (testContext.getEndDate().getTime() - testContext.getStartDate().getTime())/1000.0;
+        int pass =0, fail = 0, skipped = 0;
+        double duration = 0;
+        for (ISuiteResult iSuiteResult : testContext.getSuite().getResults().values()) {
+            pass += iSuiteResult.getTestContext().getPassedTests().size();
+            fail += iSuiteResult.getTestContext().getFailedTests().size();
+            skipped += iSuiteResult.getTestContext().getSkippedTests().size();
+            duration += iSuiteResult.getTestContext().getEndDate().getTime() - iSuiteResult.getTestContext().getStartDate().getTime();
+        }
         reporter.remove(requestId);
         updateMongo(requestId, pass + fail + skipped, pass, fail, skipped, duration, reporter.getReportName(requestId));
         log.debug("{} - Test Suite ended.", requestId);
