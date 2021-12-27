@@ -9,7 +9,6 @@ import com.ieye.model.core.RestSpecification;
 import com.ieye.model.core.TestDataModel;
 import com.ieye.model.core.ValidatorTemplate;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -74,7 +73,6 @@ public class TestManager {
 
         log.debug("{} - Start of method validate db for test {}", currentTest.getRequestId(), currentTest.getTestId());
         List<Map<String, Object>> rows = databaseManager.getDatafromDB(validator.getDatabase());
-        reporter.info(currentTest.getExtentTest(), "Rows returned: \n " + StringUtils.join(rows, "\n"));
         boolean result = true;
         if(validator.getCount() != null) {
             reporter.info(currentTest.getExtentTest(),
@@ -110,7 +108,7 @@ public class TestManager {
             }).reduce(Boolean::logicalAnd).orElse(false);
         }
         if(comparisonList.size() > 1)
-            reporter.info(currentTest.getExtentTest(), comparisonList);
+            reporter.info(currentTest.getExtentTest(), comparisonList.toArray(new String[0][]));
         log.debug("{} - End of method validate db for test {}", currentTest.getRequestId(), currentTest.getTestId());
         return result;
     }

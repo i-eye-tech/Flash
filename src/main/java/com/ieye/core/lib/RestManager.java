@@ -1,9 +1,9 @@
 package com.ieye.core.lib;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.ieye.core.enums.RestMethod;
-import com.ieye.core.helper.RestHelper;
 import com.ieye.core.lib.currenttest.CurrentTest;
 import com.ieye.model.core.ApiSpecification;
 import com.ieye.model.core.RestSpecification;
@@ -40,8 +40,15 @@ public final class RestManager {
                 .contentType(getPreferredValue(apiSpecification.getContentType(), testDataModel.getContentType()))
                 .cookies(getPreferredValue(apiSpecification.getCookies(), testDataModel.getCookies()))
                 .headers(getPreferredValue(apiSpecification.getHeaders(), testDataModel.getHeaders()))
-                .body(patternResolver.resolve(testDataModel.getBody(), currentTest.getData()))
                 .build();
+
+        Object body = null;
+        try {
+            body = objectMapper.readTree(patternResolver.resolve(testDataModel.getBody().toString(),
+                    currentTest.getData()));
+        } catch (JsonProcessingException |NullPointerException ignore) {}
+        testDataModel.setBody(null);
+        restSpecification.setBody(body);
 
        ((ObjectNode) currentTest.getData()).putPOJO("request", objectMapper.valueToTree(restSpecification));
        restSpecification.setExpectedJson(patternResolver.resolve(testDataModel.getExpectedJson(), currentTest.getData()));
@@ -49,7 +56,7 @@ public final class RestManager {
     }
 
     public RestSpecification createRestSpecification(ApiSpecification apiSpecification, RestTemplate restTemplate) {
-        return RestSpecification.builder()
+        RestSpecification r = RestSpecification.builder()
                 .basePath(getPreferredValue(apiSpecification.getDomain(), restTemplate.getDomain()))
                 .url(getPreferredValue(apiSpecification.getEndPoint(), restTemplate.getEndPoint()))
                 .method(restTemplate.getMethod())
@@ -61,8 +68,17 @@ public final class RestManager {
                 .contentType(restTemplate.getContentType())
                 .cookies(restTemplate.getCookies())
                 .headers(restTemplate.getHeaders())
-                .body(patternResolver.resolve(restTemplate.getBody(), currentTest.getData()))
                 .build();
+
+        Object body = null;
+        try {
+            body = objectMapper.readTree(patternResolver.resolve(restTemplate.getBody().toString(),
+                    currentTest.getData()));
+        } catch (JsonProcessingException | NullPointerException ignore) {}
+        restTemplate.setBody(body);
+        r.setBody(body);
+
+        return r;
     }
 
     /*
