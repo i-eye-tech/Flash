@@ -49,6 +49,7 @@ public class DatabaseManager {
                 else
                     dataAsListOfMap = mongoHelper.getDataAsListOfMap(database.getDatabaseName(),
                             database.getCollectionName(), database.getQuery());
+                break;
             case MYSQL:
                 //TODO
             case POSTGRES:
@@ -63,9 +64,7 @@ public class DatabaseManager {
                         new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(dataAsListOfMap));
             } catch (JsonProcessingException ignore) {}
         }
-
-        return null;
-
+        return dataAsListOfMap;
     }
 
 }

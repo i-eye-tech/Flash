@@ -14,7 +14,7 @@ import java.util.List;
 public class RestTemplate extends BaseRestTemplate {
 
     private String expectedJson;
-    private String body;
+    private Object body;
     private Integer expectedStatusCode;
     private List<ValidatorTemplate> validator;
 
