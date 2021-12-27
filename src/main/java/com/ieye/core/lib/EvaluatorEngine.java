@@ -2,6 +2,7 @@ package com.ieye.core.lib;
 
 import com.ieye.core.helper.CustomEvaluators;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
@@ -15,6 +16,11 @@ public final class EvaluatorEngine extends CustomEvaluators {
 
     private String generateUUID(String... args) {
         return UUID.randomUUID().toString();
+    }
+
+    private String getRandomString(String... args) {
+        int i = args.length == 1 ? Integer.parseInt(args[0]) : 10;
+        return RandomStringUtils.randomAlphanumeric(i);
     }
 
     private String stringAppend(String... args) {
