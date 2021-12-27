@@ -29,6 +29,9 @@ public final class RestManager {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public RestSpecification createRestSpecification(ApiSpecification apiSpecification, TestDataModel testDataModel) {
+        ((ObjectNode) currentTest.getData()).putPOJO("vars", objectMapper.valueToTree(
+                getPreferredValueWithObject(apiSpecification.getVars(), testDataModel.getVars())));
+
         RestSpecification restSpecification = RestSpecification.builder()
                 .basePath(getPreferredValue(apiSpecification.getDomain(), testDataModel.getDomain()))
                 .url(getPreferredValue(apiSpecification.getEndPoint(), testDataModel.getEndPoint()))
@@ -80,6 +83,17 @@ public final class RestManager {
         Arrays.asList(m1, m2).forEach(n -> {
             if(n != null)
                 n.forEach((k,v) -> params.put(k, patternResolver.resolve(v, currentTest.getData())));
+        });
+
+        return params;
+    }
+
+    private Map<String, Object> getPreferredValueWithObject(Map<String, Object> m1, Map<String, Object> m2) {
+        Map<String, Object> params = new HashMap<>();
+
+        Arrays.asList(m1, m2).forEach(n -> {
+            if(n != null)
+                n.forEach((k,v) -> params.put(k, patternResolver.resolve(v.toString(), currentTest.getData())));
         });
 
         return params;

@@ -28,4 +28,6 @@ public class TestDataModel extends RestTemplate {
     @JsonAlias("postExecutionSteps")
     private Map<String, Action> postSteps;
 
+    private Map<String, Object> vars;
+
 }

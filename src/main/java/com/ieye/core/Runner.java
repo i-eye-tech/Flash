@@ -66,6 +66,10 @@ public class Runner {
         Map<String, String> classParams = new HashMap<>();
         ObjectMapper mapper = new ObjectMapper();
         schema.getApiSpec().forEach(n -> {
+            schema.getVars().entrySet().stream()
+                            .filter(e -> !n.getVars().containsKey(e.getKey()))
+                            .forEachOrdered(e -> n.getVars().put(e.getKey(), e.getValue()));
+
             XmlTest xmlTest = new XmlTest(xmlSuite);
             XmlClass xmlClass = new XmlClass();
             xmlClass.setClass(FlashTest.class);

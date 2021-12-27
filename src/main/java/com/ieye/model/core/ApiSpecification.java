@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Map;
+
 @EqualsAndHashCode(callSuper = true)
 @Data @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -20,5 +22,6 @@ public class ApiSpecification extends BaseRestTemplate {
     private String validationType = "FlashTest";
     private String testCollection;
     private String stableDomain;
+    private Map<String, Object> vars;
 
 }
