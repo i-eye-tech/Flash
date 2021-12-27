@@ -3,6 +3,7 @@ package com.ieye.core.helper.database;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ieye.model.core.MongoDBQuery;
 import com.mongodb.BasicDBObject;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -52,8 +53,23 @@ public class MongoHelper {
     }
 
     public <T> T getDataAsListOfMap(String database, String collectionName, BasicDBObject q) {
+        MongoDBQuery query = new MongoDBQuery();
+        query.setFind(q.toJson());
+        return getDataAsListOfMap(database, collectionName, query);
+    }
+
+    public <T> T getDataAsListOfMap(String database, String collectionName, MongoDBQuery query) {
         MongoCollection<Document> mongoCollection = mongoClient.getDatabase(database).getCollection(collectionName);
-        FindIterable<Document> output = mongoCollection.find(q);
+        FindIterable<Document> output = mongoCollection.find(BasicDBObject.parse(query.getFind()));
+        if(query.getProjection() != null)
+            output.projection(BasicDBObject.parse(query.getProjection()));
+
+        if(query.getSort() != null)
+            output.sort(BasicDBObject.parse(query.getSort()));
+
+        if(query.getLimit() > 0)
+            output.limit(query.getLimit());
+
         List<Map<String, Object>> result = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
         for(Document document : output)
