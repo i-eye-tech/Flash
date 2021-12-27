@@ -14,5 +14,6 @@ public class DatabaseTemplate {
     private String databaseName;
     private String collectionName;
     private String query;
+    private MongoDBQuery mongoQuery;
 
 }

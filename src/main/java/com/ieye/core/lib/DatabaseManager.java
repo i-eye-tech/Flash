@@ -27,16 +27,28 @@ public class DatabaseManager {
     private MongoHelper mongoHelper;
 
     public <T> T getDatafromDB(DatabaseTemplate database) {
-        if(database == null || database.getQuery() == null)
+        if(database == null || (database.getQuery() == null && database.getMongoQuery() == null))
             return null;
 
-        database.setQuery(patternResolver.resolve(database.getQuery(), currentTest.getData()));
-        reporter.info(currentTest.getExtentTest(), "Executing Query: " + database.getQuery());
+        String query = "";
+        if(database.getMongoQuery() != null) {
+            query = patternResolver.resolve(database.getMongoQuery().getFind(),
+                    currentTest.getData());
+            database.getMongoQuery().setFind(query);
+        } else {
+            query = patternResolver.resolve(database.getQuery(), currentTest.getData());
+            database.setQuery(query);
+        }
+        reporter.info(currentTest.getExtentTest(), "Executing Query: " + query);
         T dataAsListOfMap = null;
         switch (database.getType()) {
             case MONGO:
-                 dataAsListOfMap = mongoHelper.getDataAsListOfMap(database.getDatabaseName(),
-                         database.getCollectionName(), database.getQuery());
+                if(database.getQuery() == null)
+                    dataAsListOfMap = mongoHelper.getDataAsListOfMap(database.getDatabaseName(),
+                            database.getCollectionName(), database.getMongoQuery());
+                else
+                    dataAsListOfMap = mongoHelper.getDataAsListOfMap(database.getDatabaseName(),
+                            database.getCollectionName(), database.getQuery());
             case MYSQL:
                 //TODO
             case POSTGRES:
