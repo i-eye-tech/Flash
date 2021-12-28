@@ -11,6 +11,7 @@ import com.ieye.core.lib.currenttest.CurrentTest;
 import com.ieye.model.core.ApiSpecification;
 import com.ieye.model.core.TestDataModel;
 import com.mongodb.BasicDBObject;
+import com.ieye.recur.TokensManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -30,6 +31,7 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
     @Autowired RestHelper restHelper;
     @Autowired RestManager restManager;
     @Autowired ActionExecutioner actionExecutioner;
+    @Autowired TokensManager tokensManager;
 
     protected ApiSpecification apiSpecification;
 
@@ -45,6 +47,7 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
     protected void zBeforeSuite(String requestId) {
         log.debug("{} - Test Suite started.", requestId);
         reporter.createReport(requestId);
+        tokensManager.init(requestId);
     }
 
     @BeforeClass
@@ -151,6 +154,7 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
             duration += iSuiteResult.getTestContext().getEndDate().getTime() - iSuiteResult.getTestContext().getStartDate().getTime();
         }
         reporter.remove(requestId);
+        tokensManager.delete(requestId);
         updateMongo(requestId, pass + fail + skipped, pass, fail, skipped, duration, reporter.getReportName(requestId));
         log.debug("{} - Test Suite ended.", requestId);
         log.info("{} - Test finished successfully. Total: {}, Pass: {}, Fail: {}, Skipped: {}, Report: {}",
