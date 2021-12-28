@@ -15,8 +15,10 @@ public class TokensManager {
     }
 
     public void addToken(String requestId, String key, String value) {
-        if(tokens.containsKey(requestId))
-            tokens.get(requestId).put(key, value);
+        synchronized (this) {
+            if(tokens.containsKey(requestId))
+                    tokens.get(requestId).put(key, value);
+        }
     }
 
     public String getToken(String requestId, String key) {
