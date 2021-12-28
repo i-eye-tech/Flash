@@ -27,6 +27,7 @@ public class RestSpecification {
     private String contentType = "application/json";
     private Integer expectedStatusCode;
     private String expectedJson;
+    private Credential credential;
 
     public RestSpecification() { }
 
@@ -43,6 +44,7 @@ public class RestSpecification {
         this.body = restSpecification.body;
         this.expectedJson = restSpecification.expectedJson;
         this.contentType = restSpecification.contentType;
+        this.credential = restSpecification.credential;
     }
 
 }

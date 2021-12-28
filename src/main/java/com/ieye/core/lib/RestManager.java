@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.ieye.core.enums.RestMethod;
 import com.ieye.core.lib.currenttest.CurrentTest;
-import com.ieye.model.core.ApiSpecification;
-import com.ieye.model.core.RestSpecification;
-import com.ieye.model.core.RestTemplate;
-import com.ieye.model.core.TestDataModel;
+import com.ieye.model.core.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +37,7 @@ public final class RestManager {
                 .contentType(getPreferredValue(apiSpecification.getContentType(), testDataModel.getContentType()))
                 .cookies(getPreferredValue(apiSpecification.getCookies(), testDataModel.getCookies()))
                 .headers(getPreferredValue(apiSpecification.getHeaders(), testDataModel.getHeaders()))
+                .credential(getPreferredCredentials(apiSpecification.getCredential(), testDataModel.getCredential()))
                 .build();
 
         Object body = null;
@@ -68,6 +66,7 @@ public final class RestManager {
                 .contentType(restTemplate.getContentType())
                 .cookies(restTemplate.getCookies())
                 .headers(restTemplate.getHeaders())
+                .credential(getPreferredCredentials(apiSpecification.getCredential(), restTemplate.getCredential()))
                 .build();
 
         Object body = null;
@@ -99,6 +98,19 @@ public final class RestManager {
         });
 
         return params;
+    }
+
+    private Credential getPreferredCredentials(Credential c1, Credential c2) {
+        if(c2 != null) {
+            c2.setUsername(patternResolver.resolve(c2.getUsername(), currentTest.getData()));
+            c2.setPassword(patternResolver.resolve(c2.getPassword(), currentTest.getData()));
+            return c2;
+        } else  if(c1 != null) {
+            c1.setUsername(patternResolver.resolve(c1.getUsername(), currentTest.getData()));
+            c1.setPassword(patternResolver.resolve(c1.getPassword(), currentTest.getData()));
+            return c1;
+        }
+        return null;
     }
 
 }
