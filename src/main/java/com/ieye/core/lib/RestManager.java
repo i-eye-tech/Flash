@@ -104,10 +104,12 @@ public final class RestManager {
         if(c2 != null) {
             c2.setUsername(patternResolver.resolve(c2.getUsername(), currentTest.getData()));
             c2.setPassword(patternResolver.resolve(c2.getPassword(), currentTest.getData()));
+            c2.setType(patternResolver.resolve(c2.getType(), currentTest.getData()));
             return c2;
         } else  if(c1 != null) {
             c1.setUsername(patternResolver.resolve(c1.getUsername(), currentTest.getData()));
             c1.setPassword(patternResolver.resolve(c1.getPassword(), currentTest.getData()));
+            c1.setType(patternResolver.resolve(c1.getType(), currentTest.getData()));
             return c1;
         }
         return null;
