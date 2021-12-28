@@ -23,16 +23,26 @@ public class RestHelper {
     @Autowired
     Reporter reporter;
 
+    @Autowired
+    Authenticator authenticator;
+
     public Response execute(RestSpecification restSpecification) {
+        return execute(restSpecification, true);
+    }
+
+    public Response execute(RestSpecification restSpecification, boolean log) {
         RequestSpecification request = createRequest(restSpecification);
+        authenticator.authenticate(restSpecification.getBasePath(), request, restSpecification.getCredential());
         Response response = send(request, restSpecification.getMethod());
 
-        try {
-            reporter.info(currentTest.getExtentTest(), String.format("%s %s%s%n%n%s%n%n",
-                    restSpecification.getMethod(), restSpecification.getBasePath(), restSpecification.getUrl(),
-                    new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(restSpecification)));
-        } catch (JsonProcessingException ignore) {}
-        reporter.info(currentTest.getExtentTest(), "Response:\n" + response.body().asPrettyString());
+        if (log) {
+            try {
+                reporter.info(currentTest.getExtentTest(), String.format("%s %s%s%n%n%s%n%n",
+                        restSpecification.getMethod(), restSpecification.getBasePath(), restSpecification.getUrl(),
+                        new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(restSpecification)));
+            } catch (JsonProcessingException ignore) {}
+            reporter.info(currentTest.getExtentTest(), "Response:\n" + response.body().asPrettyString());
+        }
 
         if(restSpecification.getExpectedStatusCode() != null
                 && response.getStatusCode() != restSpecification.getExpectedStatusCode()) {

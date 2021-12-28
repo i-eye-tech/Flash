@@ -23,5 +23,6 @@ abstract class BaseRestTemplate {
     private String contentType = "application/json";
     private String endPoint;
     private Comparator ignore;
+    private Credential credential;
 
 }
