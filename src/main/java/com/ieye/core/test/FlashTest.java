@@ -30,7 +30,7 @@ public class FlashTest extends BaseTest {
 
             if(testDataModel.getExpectedJson() == null && apiSpecification.getStableDomain() == null &&
                         testDataModel.getValidator() == null) {
-                reporter.warn(currentTest.getExtentTest(),
+                reporter.info(currentTest.getExtentTest(),
                         "No validators found in the test. Please add a stable domain or expected json or" +
                                 " a validator.");
             } else {
