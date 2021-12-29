@@ -9,12 +9,17 @@ import com.ieye.model.core.RestSpecification;
 import com.ieye.model.core.TestDataModel;
 import com.ieye.model.core.ValidatorTemplate;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+
+import static org.awaitility.Awaitility.*;
 
 @Component
 @Slf4j
@@ -53,15 +58,44 @@ public class TestManager {
         boolean result = validators.stream().map(validator -> {
             switch (validator.getType()) {
                 case REST:
-                    return validateRestAction(validator, response);
+                    return run(validator.getTimeout(), validator.getDelay(), validator.getInterval(),
+                        () -> validateRestAction(validator, response));
                 case GET_DATA:
                 case QUERY_DATABASE:
-                    return validateDBAction(validator);
+                    return run(validator.getTimeout(), validator.getDelay(), validator.getInterval(),
+                        () -> validateDBAction(validator));
             }
             return false;
         }).reduce(Boolean::logicalAnd).orElse(false);
         log.debug("{} - End of validate method for test {}.", currentTest.getRequestId(), currentTest.getTestId());
         return result;
+    }
+
+    private boolean run(int timeout, int delay, int interval, Callable<Boolean> c) {
+        if(timeout == 0)
+            try {
+                return c.call();
+            } catch (Exception e) {
+                return false;
+            }
+        else {
+            log.debug("{} - {} - Starting awaitility for {} seconds with delay {} & interval {}",
+                    currentTest.getRequestId(), currentTest.getTestId(), timeout, delay, interval);
+            try {
+                with().atMost(Duration.ofSeconds(timeout))
+                        .pollDelay(Duration.ofSeconds(delay))
+                        .pollInterval(Duration.ofSeconds(interval))
+                        .pollInSameThread()
+                        .until(c);
+                log.debug("{} - {} - Successful end of awaitility.", currentTest.getRequestId(),
+                        currentTest.getTestId());
+                return true;
+            } catch (Exception e) {
+                log.debug("{} - {} - Exception in awaitility {}.", currentTest.getRequestId(),
+                        currentTest.getTestId(), e.getMessage());
+                return false;
+            }
+        }
     }
 
     private boolean validateDBAction(ValidatorTemplate validator) {
