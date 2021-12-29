@@ -9,7 +9,6 @@ import com.ieye.model.core.RestSpecification;
 import com.ieye.model.core.TestDataModel;
 import com.ieye.model.core.ValidatorTemplate;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
