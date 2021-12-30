@@ -71,7 +71,7 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
         BasicDBObject basicDBObject = new BasicDBObject("_id.testDataId", apiSpecification.getId())
                 .append("active", true);
         if(testCaseIds != null)
-            basicDBObject.append("_id.testCaseIds", new BasicDBObject("$in",
+            basicDBObject.append("_id.testCaseId", new BasicDBObject("$in",
                     Arrays.asList(testCaseIds.split(","))));
 
         List<TestDataModel> testDataModelList = mongoHelper.getDataAsListOfMap(apiSpecification.getTestCollection(),
