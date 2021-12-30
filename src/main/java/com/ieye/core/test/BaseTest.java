@@ -19,6 +19,7 @@ import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -64,10 +65,14 @@ abstract class BaseTest extends AbstractTestNGSpringContextTests {
 
     @DataProvider(parallel = true)
     protected Object[][] testData(ITestContext iTestContext) {
+        String testCaseIds = iTestContext.getSuite().getParameter("testCaseIds");
         log.debug("DataProvider method started.");
         ObjectMapper mapper = new ObjectMapper();
         BasicDBObject basicDBObject = new BasicDBObject("_id.testDataId", apiSpecification.getId())
                 .append("active", true);
+        if(testCaseIds != null)
+            basicDBObject.append("_id.testCaseIds", new BasicDBObject("$in",
+                    Arrays.asList(testCaseIds.split(","))));
 
         List<TestDataModel> testDataModelList = mongoHelper.getDataAsListOfMap(apiSpecification.getTestCollection(),
                 basicDBObject);

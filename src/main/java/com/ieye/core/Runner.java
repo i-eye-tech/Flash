@@ -57,6 +57,8 @@ public class Runner {
         suiteParams.put("projectId", startRequestDTO.getProjectId());
         suiteParams.put("testId", startRequestDTO.getTestId());
         suiteParams.put("testType", startRequestDTO.getTestType());
+        if(startRequestDTO.getTestCaseIds() != null)
+            suiteParams.put("testCaseIds", "\"" + String.join("\",\"", startRequestDTO.getTestCaseIds()) + "\"");
 
         XmlSuite xmlSuite = new XmlSuite();
         xmlSuite.setParameters(suiteParams);

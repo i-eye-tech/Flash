@@ -14,6 +14,7 @@ public class StartRequestDTO {
     private String projectId;
     private String testType;
     private Set<String> apiSpecs;
+    private Set<String> testCaseIds;
 
     @Override
     public String toString() {
