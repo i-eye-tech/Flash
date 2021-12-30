@@ -53,7 +53,7 @@ public class PatternResolver {
         String replacement = "";
         try {
             replacement = value instanceof String ? value.toString() : mapper.writeValueAsString(value);
-            s1 = s1.replace(s, replacement);
+            s1 = s1.substring(0, s1.lastIndexOf(s)) + replacement + s1.substring(s1.lastIndexOf(s) + s.length());
         } catch (JsonProcessingException e) {
             log.error("{} - Exception while resolving evaluator pattern {}. Exception => {}",
                     currentTest.getRequestId(), method, e.getMessage());
